@@ -30,6 +30,11 @@ namespace MediaDownloader
             InitializeComponent();
             Loaded += update_Loaded;
         }
+
+        //I don't feel like placing comments in this file yet.
+        //Will do it someday later.
+        //I also need to clean up this section, probably.
+
         WebClient WebClient = new WebClient();
         public object YouTubeDLPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\youtube-dl.exe");
         public object DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
@@ -182,9 +187,8 @@ namespace MediaDownloader
         private void DownloadRTMPDump_Click(object sender, RoutedEventArgs e)
         {
             WebClient.DownloadFile("https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.4-git-010913-windows.zip", DownloadsFolder + "\\rtmpdump.zip");
-            
-            
-
+            //Damn, I need to extarct this .zip file, but I have no idea how!
+            //For RipMe I need to extract an 7zip file, even harder, probably, need to sort that out some time
         }
     }
 }

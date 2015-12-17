@@ -29,9 +29,12 @@ namespace MediaDownloader
             InitializeComponent();
         }
 
+        //Set the DownloadsFolder location, so we know where we are working.
         public object DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
+
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
         {
+            //Might need to add an if statement for when youtube-dl is not found.
             Process youtubedl = new Process();
             youtubedl.StartInfo.CreateNoWindow = true;
             youtubedl.StartInfo.UseShellExecute = false;
@@ -43,6 +46,7 @@ namespace MediaDownloader
             supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
         }
 
+        //Too bad, RipMe does not have a command to print all supported URLs, thus we need to manually enter it.
         private void ripmeButton_Checked(object sender, RoutedEventArgs e)
         {
             supportedTextBox.Text = "4chan and other *chans\r\n500px\r\n8muses\r\nanonib\r\nbcfakes\r\nbutttoucher.com\r\ncheeby\r\ndatw.in\r\ndeviantart\r\ndrawcrowd\r\nfapproved\r\nflickr\r\nfuraffinity\r\nfuskator\r\ngifyo\r\n\"gonewild\"\r\nhentai-foundry\r\ni.rarchives.com\r\nimagebam\r\nimagestash.org\r\nimagevenue\r\nimgbox.com\r\nimgur (album, userpages, subreddits)\r\ninstagram\r\nkinkyshare.com\r\nmediacru.sh\r\nminus\r\nmodelmayhem\r\nmotherless\r\nnfsfw\r\nphotobucket\r\npornhub\r\nreddit\r\nseenive\r\nsmutty.com\r\nsupertangas\r\ntaptastic\r\nteenplanet\r\ntumblr\r\ntwitter\r\nvine\r\nvinebox\r\nvk.com (images, albums, video, and video albums)\r\nxhamster (images)";
