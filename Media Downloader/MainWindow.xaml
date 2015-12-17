@@ -1,0 +1,34 @@
+﻿<Controls:MetroWindow x:Class="MediaDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MediaDownloader"
+        xmlns:MediaDownloader="clr-namespace:MediaDownloader"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Normal"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        Title="Media Downloader" Height="575" Width="675" ResizeMode="CanMinimize">
+    <Grid>
+        <dragablz:TabablzControl>
+            <TabItem Header="youtube-dl">
+                <MediaDownloader:youtubedl/>
+            </TabItem>
+            <TabItem Header="Updates">
+                <MediaDownloader:updates/>
+            </TabItem>
+            <TabItem Header="Supported URL's">
+                <MediaDownloader:supported/>
+            </TabItem>
+        </dragablz:TabablzControl>
+    </Grid>
+
+</Controls:MetroWindow>

@@ -1,0 +1,6 @@
+Todo list:
+Create a way to stop capturing live-streams
+More arguments?
+Create RipMe
+Create Supported URL's
+Create Updates/Download Tab

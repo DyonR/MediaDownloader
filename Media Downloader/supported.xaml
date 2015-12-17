@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="MediaDownloader.supported"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             mc:Ignorable="d" 
+             d:DesignWidth="655" d:DesignHeight="494">
+    <Grid>
+        <TextBox x:Name="supportedTextBox" HorizontalAlignment="Left" Height="454" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="616" Background="#00000000" ScrollViewer.CanContentScroll="True" IsReadOnly="True"/>
+        <Grid HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="187" Margin="-1,-2,0,0">
+            <RadioButton x:Name="youtubedlButton" Content="youtube-dl" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True" Checked="youtubedlButton_Checked"/>
+            <RadioButton x:Name="ripmeButton" Content="RipMe" HorizontalAlignment="Left" Margin="115,10,0,0" VerticalAlignment="Top" Checked="ripmeButton_Checked"/>
+        </Grid>
+
+    </Grid>
+</UserControl>
