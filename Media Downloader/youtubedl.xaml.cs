@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
@@ -32,10 +21,13 @@ namespace MediaDownloader
         
         //We have to get the Downloads Folder location, we do this by using the registry so we can find the Downloads folder of the user, most times, this is C:\Users\Username\Downloads.
         //But, since it can vary from user to user, we use the registry to make sure.
-        public object DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
-        public object YouTubeDLPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\youtube-dl.exe");
-        public object RipMePath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\ripme.jar");
-      //public object FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
+        public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
+        public string YouTubeDLPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\youtube-dl.exe");
+        public string RipMePath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\ripme.jar");
+        /*public object FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
+        string windir = Environment.SystemDirectory; // C:\windows\system32
+        string windrive = Path.GetPathRoot(Environment.SystemDirectory); // C:\
+        Environment.GetFolderPath(Environment.SpecialFolder.System)*/
 
         //Here we need to define all string we use for different statements, this is so we can use the same string in if/else statements.
         public string DefaultArguments;
@@ -46,11 +38,11 @@ namespace MediaDownloader
         //When the form loads, we have to make sure that the "Media Downloads" folder exists, we first check if it exists, if it does not exist, I will create it.
         private void youtubedl_Loaded(object sender, RoutedEventArgs e)
         {
-            Directory.SetCurrentDirectory(DownloadsFolder.ToString());
             if (!Directory.Exists(DownloadsFolder.ToString()))
             {
                 Directory.CreateDirectory(DownloadsFolder.ToString());
             }
+            Directory.SetCurrentDirectory(DownloadsFolder.ToString());
         }
         //Here we remove the text of the textboxes so the user does not need to remove the text him or herself, the text will get removed when the box is select, also known as 'GotFocus'.
         private void youtubedlURLBox_GotFocus(object sender, RoutedEventArgs e)
@@ -214,6 +206,7 @@ namespace MediaDownloader
 
         private void removeHistory_Click(object sender, RoutedEventArgs e)
         {
+            //Must create a check to see if the files are in use or not.
             //Reset the Downloads Folder location, if the user used the separate folder option before using this button, the DownloadsLocation would sitll point to the separatefolder.
             object DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
             Directory.SetCurrentDirectory(DownloadsFolder.ToString());

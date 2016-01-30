@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
-using System.Net;
 
 namespace MediaDownloader
 {
@@ -30,20 +17,28 @@ namespace MediaDownloader
         }
 
         //Set the DownloadsFolder location, so we know where we are working.
-        public object DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
+        public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
+        public string YouTubeDLPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\youtube-dl.exe");
 
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
         {
-            //Might need to add an if statement for when youtube-dl is not found.
-            Process youtubedl = new Process();
-            youtubedl.StartInfo.CreateNoWindow = true;
-            youtubedl.StartInfo.UseShellExecute = false;
-            youtubedl.StartInfo.RedirectStandardOutput = true;
-            youtubedl.StartInfo.RedirectStandardError = true;
-            youtubedl.StartInfo.FileName = DownloadsFolder.ToString() + "\\youtube-dl.exe";
-            youtubedl.StartInfo.Arguments = " --list-extractors";
-            youtubedl.Start();
-            supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
+            if (File.Exists(YouTubeDLPath))
+            {
+                Process youtubedl = new Process();
+                youtubedl.StartInfo.CreateNoWindow = true;
+                youtubedl.StartInfo.UseShellExecute = false;
+                youtubedl.StartInfo.RedirectStandardOutput = true;
+                youtubedl.StartInfo.RedirectStandardError = true;
+                youtubedl.StartInfo.FileName = DownloadsFolder + "\\youtube-dl.exe";
+                youtubedl.StartInfo.Arguments = " --list-extractors";
+                youtubedl.Start();
+                supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
+            }
+            else
+            {
+                supportedTextBox.Text = @"youtube-dl not found.
+Please go to the Updates tab, and update youtube-dl.";
+            }
         }
 
         //Too bad, RipMe does not have a command to print all supported URLs, thus we need to manually enter it.
