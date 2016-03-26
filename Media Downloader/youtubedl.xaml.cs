@@ -83,7 +83,7 @@ namespace MediaDownloader
         private void StartyouTubedlButton_Click(object sender, RoutedEventArgs e)
         {
             //If the URL box contains the default text or is empty, we will give the user a error message after the button has been pressed.
-            if (!youtubedlURLBox.Text.Contains("http") || !File.Exists(YouTubeDLPath) || !File.Exists(RipMePath) || !File.Exists(ffmpegPath))
+            if (!youtubedlURLBox.Text.Contains(".") || !File.Exists(YouTubeDLPath) || !File.Exists(RipMePath) || !File.Exists(ffmpegPath))
             {
                 MessageBox.Show("You did not enter a URL, youtube-dl, RipMe or FFmpeg is missing.");
             }
