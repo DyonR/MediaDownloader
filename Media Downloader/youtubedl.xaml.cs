@@ -18,7 +18,6 @@ namespace MediaDownloader
         {
             InitializeComponent();
             Loaded += youtubedl_Loaded;
-
         }
 
         BackgroundWorker processWorker;
@@ -26,7 +25,7 @@ namespace MediaDownloader
         //We have to get the Downloads Folder location, we do this by using the registry so we can find the Downloads folder of the user, most times, this is C:\Users\Username\Downloads.
         //But, since it can vary from user to user, we use the registry to make sure.
         public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
-        public string LocalStorageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader");
+        public string LocalStorageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\");
         public string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
         public string RipMePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ripme.jar");
         public string ffmpegfolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ffmpeg");
@@ -84,7 +83,7 @@ namespace MediaDownloader
         private void StartyouTubedlButton_Click(object sender, RoutedEventArgs e)
         {
             //If the URL box contains the default text or is empty, we will give the user a error message after the button has been pressed.
-            if (!youtubedlURLBox.Text.Contains(".") || !File.Exists(YouTubeDLPath) || !File.Exists(RipMePath) || !File.Exists(ffmpegPath))
+            if (!youtubedlURLBox.Text.Contains("http") || !File.Exists(YouTubeDLPath) || !File.Exists(RipMePath) || !File.Exists(ffmpegPath))
             {
                 MessageBox.Show("You did not enter a URL, youtube-dl, RipMe or FFmpeg is missing.");
             }
@@ -220,7 +219,7 @@ namespace MediaDownloader
             {
                 Directory.CreateDirectory(SeparateFolderTextBox.Text);
                 DownloadsFolder = DownloadsFolder + SeparateFolderTextBox.Text;
-                Directory.SetCurrentDirectory(DownloadsFolder.ToString());
+                Directory.SetCurrentDirectory(DownloadsFolder);
             }
             }));
             youtubedl.Start();
@@ -322,21 +321,27 @@ namespace MediaDownloader
 
         private void removeHistory_Click(object sender, RoutedEventArgs e)
         {
-            string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
-            Directory.SetCurrentDirectory(DownloadsFolder);
             try {
-                File.Delete(DownloadsFolder + "rip.properties");
+                File.Delete(LocalStorageFolder + "rip.properties");
             }
             catch
             {
-                MessageBox.Show("Can't delete " + DownloadsFolder + "rip.properties");
+                MessageBox.Show("Can't delete " + LocalStorageFolder + "rip.properties");
             }
             try {
-                File.Delete(DownloadsFolder + "history.json");
+                File.Delete(LocalStorageFolder + "history.json");
             }
             catch
             {
-                MessageBox.Show("Can't delete " + DownloadsFolder + "history.json");
+                MessageBox.Show("Can't delete " + LocalStorageFolder + "history.json");
+            }
+            try
+            {
+                File.Delete(LocalStorageFolder + "ripme.log");
+            }
+            catch
+            {
+                MessageBox.Show("Can't delete " + LocalStorageFolder + "ripme.log");
             }
         }
 

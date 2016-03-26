@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
-             d:DesignWidth="655" d:DesignHeight="494">
+             d:DesignWidth="630" d:DesignHeight="494">
     <Grid>
         <TextBox x:Name="supportedTextBox" HorizontalAlignment="Left" Height="454" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="616" Background="#00000000" ScrollViewer.CanContentScroll="True" IsReadOnly="True"/>
         <Grid HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="187" Margin="-1,-2,0,0">

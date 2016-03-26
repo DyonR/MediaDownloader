@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
-             d:DesignWidth="655" d:DesignHeight="494">
+             d:DesignWidth="630" d:DesignHeight="494">
     <Grid>
         <Grid x:Name="AudioVideoGrid" HorizontalAlignment="Left" Height="78" VerticalAlignment="Top" Width="300">
             <TextBlock x:Name="AudioVideoTextBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Do you want to download it as audio or video?" VerticalAlignment="Top"/>
@@ -19,7 +19,7 @@
         <TextBlock x:Name="LimitSpeedBlock" HorizontalAlignment="Left" Margin="10,161,0,0" TextWrapping="Wrap" Text="Limit download speed. For example: 500K, 10M" VerticalAlignment="Top" TextTrimming="WordEllipsis" Width="157" ToolTip="in bytes/s, 500K would be 500KB/s, 10M would be 10MB/s, 1G would be 1GB/s" Cursor="Help"/>
         <TextBox x:Name="LimitSpeedBox" HorizontalAlignment="Left" Height="27" Margin="10,198,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="157"/>
         <CheckBox x:Name="LivestreamBox" Content="Livestream download" HorizontalAlignment="Left" Margin="10,230,0,0" VerticalAlignment="Top" ToolTip="Enables the youtube-dl console, so you are able to stop the livestream download.&#x0a;Can also be used to check what youtube-dl is executing." Cursor="Help"/>
-        <Button x:Name="StartyouTubedlButton" Content="Start download" HorizontalAlignment="Left" Margin="503,464,0,0" VerticalAlignment="Top" Width="142" Click="StartyouTubedlButton_Click"/>
+        <Button x:Name="StartyouTubedlButton" Content="Start download" HorizontalAlignment="Left" Margin="473,464,0,-2" VerticalAlignment="Top" Width="142" Click="StartyouTubedlButton_Click"/>
         <CheckBox x:Name="LoginBox" Content="Login to the video website" HorizontalAlignment="Left" Margin="350,10,0,0" VerticalAlignment="Top" Checked="LoginBox_Checked" Unchecked="LoginBox_Unchecked"/>
         <TextBox x:Name="UsernameTextBox" HorizontalAlignment="Left" Height="27" Margin="350,33,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top" Width="162" IsEnabled="False" GotFocus="UsernameTextBox_GotFocus"/>
         <PasswordBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Margin="350,65,0,0" VerticalAlignment="Top" Width="162" Password="Password" IsEnabled="False" GotFocus="PasswordTextBox_GotFocus" Height="27"/>
@@ -29,8 +29,8 @@
         <CheckBox x:Name="IPv6Box" Content="Force IPv6 connection (Experimental)" HorizontalAlignment="Left" Margin="350,198,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="RipMeBox" Content="Use RipMe, for pictures and albums" HorizontalAlignment="Left" Margin="350,230,0,0" VerticalAlignment="Top" Checked="RipMeBox_Checked" Unchecked="RipMeBox_Unchecked"/>
 
-        <TextBox x:Name="youtubedlURLBox" HorizontalAlignment="Left" Height="157" Margin="0,290,0,0" TextWrapping="Wrap" Text="Paste your URL's in here!" VerticalAlignment="Top" Width="645" AcceptsReturn="True" GotFocus="youtubedlURLBox_GotFocus"/>
+        <TextBox x:Name="youtubedlURLBox" HorizontalAlignment="Left" Height="157" Margin="10,290,0,0" TextWrapping="Wrap" Text="Paste your URL's in here!" VerticalAlignment="Top" Width="605" AcceptsReturn="True" GotFocus="youtubedlURLBox_GotFocus"/>
         <Button x:Name="removeHistory" Content="Remove RipMe download history" HorizontalAlignment="Left" Margin="350,253,0,0" VerticalAlignment="Top" Width="265" Click="removeHistory_Click"/>
-        <Button x:Name="killButton" Content="Kill current downloads" HorizontalAlignment="Left" Margin="296,464,0,-2" VerticalAlignment="Top" Width="181" Click="killButton_Click" IsEnabled="False"/>
+        <Button x:Name="killButton" Content="Kill current downloads" HorizontalAlignment="Left" Margin="259,464,0,-2" VerticalAlignment="Top" Width="181" Click="killButton_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>
