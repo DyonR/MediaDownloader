@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Diagnostics;
-using Microsoft.Win32;
 using System.IO;
+using System.ComponentModel;
+using System;
 
 namespace MediaDownloader
 {
@@ -16,28 +17,41 @@ namespace MediaDownloader
             InitializeComponent();
         }
 
-        //Set the DownloadsFolder location, so we know where we are working.
-        public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads");
-        public string YouTubeDLPath = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\youtube-dl.exe");
+        BackgroundWorker youtubedlSupported;
+        public string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
 
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(YouTubeDLPath))
-            {
-                Process youtubedl = new Process();
-                youtubedl.StartInfo.CreateNoWindow = true;
-                youtubedl.StartInfo.UseShellExecute = false;
-                youtubedl.StartInfo.RedirectStandardOutput = true;
-                youtubedl.StartInfo.RedirectStandardError = true;
-                youtubedl.StartInfo.FileName = DownloadsFolder + "\\youtube-dl.exe";
-                youtubedl.StartInfo.Arguments = " --list-extractors";
-                youtubedl.Start();
-                supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
+            youtubedlSupported = new BackgroundWorker();
+            youtubedlSupported.WorkerReportsProgress = true;
+            youtubedlSupported.DoWork += (obj, ea) => youtubedlSupported_Process();
+            youtubedlSupported.RunWorkerAsync();
+        }
+
+        public void youtubedlSupported_Process()
+        {
+            if(File.Exists(YouTubeDLPath))
+            { 
+                this.Dispatcher.Invoke((System.Action)(() =>
+                {
+                    Process youtubedl = new Process();
+                    youtubedl.StartInfo.CreateNoWindow = true;
+                    youtubedl.StartInfo.UseShellExecute = false;
+                    youtubedl.StartInfo.RedirectStandardOutput = true;
+                    youtubedl.StartInfo.RedirectStandardError = true;
+                    youtubedl.StartInfo.FileName = YouTubeDLPath;
+                    youtubedl.StartInfo.Arguments = " --list-extractors";
+                    youtubedl.Start();
+                    supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
+                }));
             }
             else
             {
-                supportedTextBox.Text = @"youtube-dl not found.
+                this.Dispatcher.Invoke((System.Action)(() =>
+                {
+                    supportedTextBox.Text = @"youtube-dl not found.
 Please go to the Updates tab, and update youtube-dl.";
+                }));
             }
         }
 

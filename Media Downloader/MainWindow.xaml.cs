@@ -1,7 +1,5 @@
 ﻿using System.Windows;
 using MahApps.Metro.Controls;
-using System.IO;
-using Microsoft.Win32;
 using System.Net;
 
 namespace MediaDownloader
@@ -15,7 +13,6 @@ namespace MediaDownloader
         {
             CheckForInternetConnection();
             InitializeComponent();
-            
         }
         public static bool CheckForInternetConnection()
         {

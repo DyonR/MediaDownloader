@@ -16,10 +16,10 @@
         TextElement.FontWeight="Normal"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        Title="Media Downloader v4.2" Height="575" Width="675" ResizeMode="CanMinimize">
+        Title="Media Downloader v4.4 - In Development" Height="575" Width="675" ResizeMode="CanMinimize">
     <Grid>
         <dragablz:TabablzControl>
-            <TabItem Header="youtube-dl">
+            <TabItem Header="Downloader">
                 <MediaDownloader:youtubedl/>
             </TabItem>
             <TabItem Header="Updates">
