@@ -165,11 +165,12 @@ namespace MediaDownloader
             this.Dispatcher.Invoke((System.Action)(() => {
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
-                string AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location " + ffmpegPath + " ";
+                string AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location \"" + ffmpegPath + "\" ";
                 if (AudioButton.IsChecked.Value) { DefaultArguments = AudioArguments; };
 
                 //Set the correct arguments when the Video Button is checked
-                string VideoArguments = "--continu --ignore-errors --no-overwrites --output \"%(title)s.%(ext)s\" --ffmpeg-location " + ffmpegPath + " ";
+                string VideoArguments = "--continu --ignore-errors --no-overwrites --output \"%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
+                MessageBox.Show(VideoArguments); 
                 if (VideoButton.IsChecked.Value) { DefaultArguments = VideoArguments; };
 
                 //Set the connection type of youtube-dl to IPv6, this option is still experimental, but I think it was a nice thing to add.
