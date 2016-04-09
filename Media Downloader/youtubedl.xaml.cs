@@ -118,7 +118,7 @@ namespace MediaDownloader
             string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
             Directory.SetCurrentDirectory(DownloadsFolder);
             Process ripme = new Process();
-            this.Dispatcher.Invoke((System.Action)(() => {
+            this.Dispatcher.Invoke((Action)(() => {
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
                 if (LivestreamBox.IsChecked.Value)
@@ -141,7 +141,7 @@ namespace MediaDownloader
         }
         public void ripme_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            this.Dispatcher.Invoke((System.Action)(() =>{
+            this.Dispatcher.Invoke((Action)(() =>{
                 if(e.Data != null)
                 {
                     youtubedlURLBox.Text += e.Data.ToString() + System.Environment.NewLine + System.Environment.NewLine;
@@ -162,7 +162,7 @@ namespace MediaDownloader
         {
             string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
             Directory.SetCurrentDirectory(DownloadsFolder);
-            this.Dispatcher.Invoke((System.Action)(() => {
+            this.Dispatcher.Invoke((Action)(() => {
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
                 string AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location \"" + ffmpegPath + "\" ";
@@ -197,7 +197,7 @@ namespace MediaDownloader
                 //If the livesteam checkbox is checked, we will create a new windows, so users can stop the livestream download
                 //not a nice way to do this, since it just shows the youtube-dl console. But I could not find a way to do this differently.
             Process youtubedl = new Process();
-            this.Dispatcher.Invoke((System.Action)(() => {
+            this.Dispatcher.Invoke((Action)(() => {
                 if (LivestreamBox.IsChecked.Value)
                 {
                     youtubedl.StartInfo.CreateNoWindow = false;
@@ -214,7 +214,7 @@ namespace MediaDownloader
             //After that we can start the download process
             youtubedl.StartInfo.RedirectStandardOutput = true;
             youtubedl.OutputDataReceived += new DataReceivedEventHandler(youtubeDL_Process_OutputDataReceived);
-            this.Dispatcher.Invoke((System.Action)(() => {
+            this.Dispatcher.Invoke((Action)(() => {
                 if (SeparateFolderBox.IsChecked.Value)
             {
                 Directory.CreateDirectory(SeparateFolderTextBox.Text);
@@ -229,7 +229,7 @@ namespace MediaDownloader
 
         public void youtubeDL_Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            this.Dispatcher.Invoke((System.Action)(() => {
+            this.Dispatcher.Invoke((Action)(() => {
                 if (e.Data != null)
                 {
                     youtubedlURLBox.Text = e.Data.ToString();
@@ -322,26 +322,26 @@ namespace MediaDownloader
         private void removeHistory_Click(object sender, RoutedEventArgs e)
         {
             try {
-                File.Delete(LocalStorageFolder + "rip.properties");
+                File.Delete(DownloadsFolder + "rip.properties");
             }
             catch
             {
-                MessageBox.Show("Can't delete " + LocalStorageFolder + "rip.properties");
+                MessageBox.Show("Can't delete " + DownloadsFolder + "rip.properties");
             }
             try {
-                File.Delete(LocalStorageFolder + "history.json");
+                File.Delete(DownloadsFolder + "history.json");
             }
             catch
             {
-                MessageBox.Show("Can't delete " + LocalStorageFolder + "history.json");
+                MessageBox.Show("Can't delete " + DownloadsFolder + "history.json");
             }
             try
             {
-                File.Delete(LocalStorageFolder + "ripme.log");
+                File.Delete(DownloadsFolder + "ripme.log");
             }
             catch
             {
-                MessageBox.Show("Can't delete " + LocalStorageFolder + "ripme.log");
+                MessageBox.Show("Can't delete " + DownloadsFolder + "ripme.log");
             }
         }
 

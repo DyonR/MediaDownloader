@@ -29,7 +29,7 @@ namespace MediaDownloader
             catch
             {
                 MessageBox.Show(@"Media Downloader requires a working internet connection.
-Either your internet is not working or Google.com is offline.", "No internet connection ", MessageBoxButton.OK, MessageBoxImage.Error);
+Either your internet is not working or Google.com is unreachable.", "No internet connection ", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
                 return false;
             }

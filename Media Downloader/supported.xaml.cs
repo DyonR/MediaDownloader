@@ -32,7 +32,7 @@ namespace MediaDownloader
         {
             if(File.Exists(YouTubeDLPath))
             { 
-                this.Dispatcher.Invoke((System.Action)(() =>
+                this.Dispatcher.Invoke((Action)(() =>
                 {
                     Process youtubedl = new Process();
                     youtubedl.StartInfo.CreateNoWindow = true;
@@ -47,10 +47,10 @@ namespace MediaDownloader
             }
             else
             {
-                this.Dispatcher.Invoke((System.Action)(() =>
+                this.Dispatcher.Invoke((Action)(() =>
                 {
                     supportedTextBox.Text = @"youtube-dl not found.
-Please go to the Updates tab, and update youtube-dl.";
+Please go to the Updates tab, and download youtube-dl.";
                 }));
             }
         }

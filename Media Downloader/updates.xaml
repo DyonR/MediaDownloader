@@ -23,9 +23,8 @@
         <TextBlock x:Name="FFmpegVersionStatusText" HorizontalAlignment="Left" Margin="10,258,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <Button x:Name="UpdateFFmpeg" Content="Update FFmpeg" HorizontalAlignment="Left" Margin="10,279,0,0" VerticalAlignment="Top" Width="200" ToolTip="FFmpeg is used to convert video files to audio files." IsEnabled="False" Click="UpdateFFmpeg_Click"/>
         
-        <Button x:Name="DownloadRTMPDump" Content="Download RTMPDump" HorizontalAlignment="Left" Margin="10,328,0,0" VerticalAlignment="Top" Width="200" IsEnabled="False" ToolTip="Some streaming websites use RTMP for streaming, RTMPdump can capture these streams." Click="DownloadRTMPDump_Click"/>
+        <Button x:Name="DownloadRTMPDump" Content="Download RTMPDump" HorizontalAlignment="Left" Margin="10,328,0,0" VerticalAlignment="Top" Width="200" IsEnabled="False" ToolTip="Some streaming websites use RTMP for streaming, RTMPDump can capture these streams." Click="DownloadRTMPDump_Click"/>
         <Label x:Name="FreezeNote" Content="Note: While updating, this program will freeze. Do not force close the program." HorizontalAlignment="Left" Margin="10,458,0,0" VerticalAlignment="Top" Width="578"/>
         <Button x:Name="CheckForUpdates" Content="Check for updates" HorizontalAlignment="Left" Margin="10,377,0,0" VerticalAlignment="Top" Width="200" Click="CheckForUpdates_Click" ToolTip="Checking for updates can take up to 20 seconds."/>
-
     </Grid>
 </UserControl>
