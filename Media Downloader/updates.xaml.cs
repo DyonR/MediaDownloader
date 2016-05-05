@@ -36,7 +36,11 @@ namespace MediaDownloader
         public string LatestRipMeVersion;
         public string CurrentRipMeVersion;
 
-        public int IsUpdating;
+        public int checkforUpdates = 0;
+        public int youtubedlUpdating = 0;
+        public int ripmeUpdating = 0;
+        public int ffmpegUpdating = 0;
+        public int rtmpdumpUpdating = 0; 
 
         BackgroundWorker youtubedlWorker;
         BackgroundWorker youtubedlUpdateWorker;
@@ -79,12 +83,12 @@ namespace MediaDownloader
         }
         private void UpdateYouTubeDL_Click(object sender, RoutedEventArgs e)
         {
-            if (IsUpdating != 2)
+            if (checkforUpdates != 1)
             {
                 youtubedlUpdateWorker = new BackgroundWorker();
                 youtubedlUpdateWorker.WorkerReportsProgress = true;
                 youtubedlUpdateWorker.DoWork += (obj, ea) => youtubedlInstallLastestVersion_Process();
-                youtubedlUpdateWorker.RunWorkerAsync(IsUpdating = 1);
+                youtubedlUpdateWorker.RunWorkerAsync(youtubedlUpdating = 1);
             }
             else
             {
@@ -94,12 +98,12 @@ namespace MediaDownloader
 
         private void UpdateRipMe_Click(object sender, RoutedEventArgs e)
         {
-            if (IsUpdating != 2)
+            if (checkforUpdates != 1)
             {
                 ripmeUpdateWorker = new BackgroundWorker();
                 ripmeUpdateWorker.WorkerReportsProgress = true;
                 ripmeUpdateWorker.DoWork += (obj, ea) => RipMeInstallLastestVersion_Process();
-                ripmeUpdateWorker.RunWorkerAsync(IsUpdating = 1);
+                ripmeUpdateWorker.RunWorkerAsync(ripmeUpdating = 1);
             }
             else
             {
@@ -109,12 +113,12 @@ namespace MediaDownloader
 
         private void UpdateFFmpeg_Click(object sender, RoutedEventArgs e)
         {
-            if (IsUpdating != 2)
+            if (checkforUpdates != 1)
             {
                 ffmpegUpdateWorker = new BackgroundWorker();
                 ffmpegUpdateWorker.WorkerReportsProgress = true;
                 ffmpegUpdateWorker.DoWork += (obj, ea) => ffmpegInstallLastestVersion_Process();
-                ffmpegUpdateWorker.RunWorkerAsync(IsUpdating = 1);
+                ffmpegUpdateWorker.RunWorkerAsync(ffmpegUpdating = 1);
             }
             else
             {
@@ -123,12 +127,12 @@ namespace MediaDownloader
         }
         private void DownloadRTMPDump_Click(object sender, RoutedEventArgs e)
         {
-            if (IsUpdating != 2)
+            if (checkforUpdates != 1)
             {
                 RTMPDumpUpdateWorker = new BackgroundWorker();
                 RTMPDumpUpdateWorker.WorkerReportsProgress = true;
                 RTMPDumpUpdateWorker.DoWork += (obj, ea) => RTMPDumpInstallLastestVersion_Process();
-                RTMPDumpUpdateWorker.RunWorkerAsync(IsUpdating = 1);
+                RTMPDumpUpdateWorker.RunWorkerAsync(rtmpdumpUpdating = 1);
             }
             else
             {
@@ -162,6 +166,7 @@ namespace MediaDownloader
                 {
                     CurrentYouTubeDLVersionText.Text = "Current youtube-dl.exe version: youtube-dl.exe not found.";
                     YouTubeDLVersionStatusText.Text = "youtube-dl.exe can not be found, please click the button below.";
+                    UpdateYouTubeDL.Content = "Update youtube-dl";
                     UpdateYouTubeDL.IsEnabled = true;
                 }));
             }
@@ -186,6 +191,7 @@ namespace MediaDownloader
                     this.Dispatcher.Invoke((Action)(() =>
                     {
                         YouTubeDLVersionStatusText.Text = "Your youtube-dl.exe is out of date, please click the button below to update.";
+                        UpdateYouTubeDL.Content = "Update youtube-dl";
                         UpdateYouTubeDL.IsEnabled = true;
                     }));
                 }
@@ -222,7 +228,7 @@ namespace MediaDownloader
             {
                 UpdateYouTubeDL.Content = "Update finished";
             }));
-            IsUpdating = 0;
+            youtubedlUpdating = 0;
         }
         private void RipMeGetCurrentVersion_Process()
         {
@@ -256,6 +262,7 @@ namespace MediaDownloader
                 this.Dispatcher.Invoke((Action)(() => {
                     CurrentRipMeVersionText.Text = "Current RipMe version: ripme.jar not found";
                     RipMeVersionStatusText.Text = "ripme.jar can not be found, please click the button below.";
+                    UpdateRipMe.Content = "Update RipMe";
                     UpdateRipMe.IsEnabled = true;
                 }));
             }
@@ -284,6 +291,7 @@ namespace MediaDownloader
                     this.Dispatcher.Invoke((Action)(() =>
                     {
                         RipMeVersionStatusText.Text = "Your RipMe is out of date, please click the button below to update.";
+                        UpdateRipMe.Content = "Update RipMe";
                         UpdateRipMe.IsEnabled = true;
                     }));
                 }
@@ -320,7 +328,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Update finished";
             }));
-            IsUpdating = 0;
+            ripmeUpdating = 0;
         }
         private void ffmpegGetCurrentVersion_Process()
         {
@@ -340,6 +348,7 @@ namespace MediaDownloader
                 {
                     CurrentFFmpegVersionText.Text = "Current FFmpeg version: FFmpeg not found.";
                     FFmpegVersionStatusText.Text = "ffmpeg can not be found, please click the button below.";
+                    UpdateFFmpeg.Content = "Update FFmpeg";
                     UpdateFFmpeg.IsEnabled = true;
                 }));
             }
@@ -393,6 +402,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
                     this.Dispatcher.Invoke((Action)(() =>
                     {
                         FFmpegVersionStatusText.Text = "Your FFmpeg is out of date, please click the button below to update.";
+                        UpdateFFmpeg.Content = "Update FFmpeg";
                         UpdateFFmpeg.IsEnabled = true;
                     }));
                 }
@@ -486,7 +496,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             {
                 UpdateFFmpeg.Content = "Update finished";
             }));
-            IsUpdating = 0;
+            ffmpegUpdating = 0;
         }
         private void RTMPDumpInstallLastestVersion_Process()
         {
@@ -506,21 +516,23 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             {
                 DownloadRTMPDump.Content = "Update finished";
             }));
-            IsUpdating = 0;
+            rtmpdumpUpdating = 0;
         }
         private void RTMPDumpCompareVersion_Process()
         {
                 if (!File.Exists(RTMPDumpPath))
                 {
                 this.Dispatcher.Invoke((Action)(() => {
+                    DownloadRTMPDump.Content = "Download RTMPDump";
                     DownloadRTMPDump.IsEnabled = true;
                 }));
             }
         }
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
-            if (IsUpdating != 1) {
-                IsUpdating = 2;
+            if (youtubedlUpdating == 0  && ripmeUpdating == 0 && ffmpegUpdating == 0 && rtmpdumpUpdating == 0)
+            {
+                checkforUpdates = 1;
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                 CheckForUpdates.IsEnabled = false;
@@ -565,7 +577,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
         private void RTMPDumpUpdateWorker_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
             CheckForUpdates.IsEnabled = true;
-            IsUpdating = 0;
+            checkforUpdates = 0;
         }
     }
 }

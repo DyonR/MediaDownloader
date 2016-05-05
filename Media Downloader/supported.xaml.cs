@@ -18,6 +18,7 @@ namespace MediaDownloader
         }
 
         BackgroundWorker youtubedlSupported;
+
         public string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
 
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
@@ -32,16 +33,16 @@ namespace MediaDownloader
         {
             if(File.Exists(YouTubeDLPath))
             { 
+                Process youtubedl = new Process();
+                youtubedl.StartInfo.CreateNoWindow = true;
+                youtubedl.StartInfo.UseShellExecute = false;
+                youtubedl.StartInfo.RedirectStandardOutput = true;
+                youtubedl.StartInfo.RedirectStandardError = true;
+                youtubedl.StartInfo.FileName = YouTubeDLPath;
+                youtubedl.StartInfo.Arguments = " --list-extractors";
+                youtubedl.Start();
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    Process youtubedl = new Process();
-                    youtubedl.StartInfo.CreateNoWindow = true;
-                    youtubedl.StartInfo.UseShellExecute = false;
-                    youtubedl.StartInfo.RedirectStandardOutput = true;
-                    youtubedl.StartInfo.RedirectStandardError = true;
-                    youtubedl.StartInfo.FileName = YouTubeDLPath;
-                    youtubedl.StartInfo.Arguments = " --list-extractors";
-                    youtubedl.Start();
                     supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
                 }));
             }

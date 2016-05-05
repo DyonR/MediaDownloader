@@ -51,6 +51,7 @@ namespace MediaDownloader
             }
             Directory.SetCurrentDirectory(DownloadsFolder);
         }
+
         //Here we remove the text of the textboxes so the user does not need to remove the text him or herself, the text will get removed when the box is select, also known as 'GotFocus'.
         private void youtubedlURLBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -347,20 +348,29 @@ namespace MediaDownloader
 
         private void killButton_Click(object sender, RoutedEventArgs e)
         {
-            Process[] prs = Process.GetProcesses();
-            foreach (Process pr in prs)
-            {
-                if (pr.ProcessName == "youtube-dl")
+            MessageBoxResult WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java en RTMPDump processes.
+If you have a Java process running, this will also get force closed.
+Do you want to continue and kill the processes?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (WarningResult == MessageBoxResult.Yes) {
+                Process[] prs = Process.GetProcesses();
+                foreach (Process pr in prs)
                 {
-                    pr.Kill();
-                }
-                if (pr.ProcessName == "ffmpeg")
-                {
-                    pr.Kill();
-                }
-                if (pr.ProcessName == "java")
-                {
-                    pr.Kill();
+                    if (pr.ProcessName == "youtube-dl")
+                    {
+                        pr.Kill();
+                    }
+                    if (pr.ProcessName == "ffmpeg")
+                    {
+                        pr.Kill();
+                    }
+                    if (pr.ProcessName == "java")
+                    {
+                        pr.Kill();
+                    }
+                    if (pr.ProcessName == "rtmpdump")
+                    {
+                        pr.Kill();
+                    }
                 }
             }
         }
