@@ -199,7 +199,7 @@ namespace MediaDownloader
                 //not a nice way to do this, since it just shows the youtube-dl console. But I could not find a way to do this differently.
             Process youtubedl = new Process();
             this.Dispatcher.Invoke((Action)(() => {
-                if (LivestreamBox.IsChecked.Value)
+                if (LivestreamBox.IsChecked.Value || TwoFactorBox.IsChecked.Value)
                 {
                     youtubedl.StartInfo.CreateNoWindow = false;
                 }
