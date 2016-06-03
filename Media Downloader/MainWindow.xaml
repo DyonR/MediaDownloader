@@ -14,7 +14,7 @@
         TextElement.FontWeight="Normal"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        Title="Media Downloader v4.5b" Height="575" Width="640" ResizeMode="CanMinimize">
+        Title="Media Downloader v4.6" Height="575" Width="640" ResizeMode="CanMinimize">
     <Grid>
         <dragablz:TabablzControl>
             <TabItem Header="Downloader">
