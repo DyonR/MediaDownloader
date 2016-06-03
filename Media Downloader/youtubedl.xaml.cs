@@ -222,7 +222,6 @@ namespace MediaDownloader
                     Directory.SetCurrentDirectory(DownloadsFolder);
                 }
             });
-            MessageBox.Show(youtubedl.StartInfo.Arguments);
             youtubedl.Start();
             youtubedl.BeginOutputReadLine();
             youtubedl.WaitForExit();
