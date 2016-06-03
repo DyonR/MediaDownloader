@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using MahApps.Metro.Controls;
 using System.Net;
 
 namespace MediaDownloader
@@ -7,7 +6,7 @@ namespace MediaDownloader
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -20,7 +19,7 @@ namespace MediaDownloader
             {
                 using (var client = new WebClient())
                 {
-                    using (var stream = client.OpenRead("http://www.google.com"))
+                    using (client.OpenRead("http://www.google.com"))
                     {
                         return true;
                     }

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
@@ -12,7 +11,7 @@ namespace MediaDownloader
     /// <summary>
     /// Interaction logic for youtubedl.xaml
     /// </summary>
-    public partial class youtubedl : UserControl
+    public partial class youtubedl
     {
         public youtubedl()
         {
@@ -95,7 +94,7 @@ namespace MediaDownloader
                 processWorker.WorkerReportsProgress = true;
                 //We replace each new line in the URL text box with spaces, so we can download multiple URLs at once
                 DownloadURL = null;
-                DownloadURL = youtubedlURLBox.Text.Replace(System.Environment.NewLine, " ");
+                DownloadURL = youtubedlURLBox.Text.Replace(Environment.NewLine, " ");
                 youtubedlURLBox.Text = null;
 
                 //First, we check if the RipMe checkbox is checked, if that is the case, we will use the RipMe process.
@@ -119,18 +118,14 @@ namespace MediaDownloader
             string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
             Directory.SetCurrentDirectory(DownloadsFolder);
             Process ripme = new Process();
-            this.Dispatcher.Invoke((Action)(() => {
+            Dispatcher.Invoke(() => {
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
-                if (LivestreamBox.IsChecked.Value)
-                {
-                    ripme.StartInfo.CreateNoWindow = false;
-                }
-                else
+                if (!LivestreamBox.IsChecked.Value)
                 {
                     ripme.StartInfo.CreateNoWindow = true;
                 }
-            }));
+            });
             ripme.StartInfo.UseShellExecute = false;
             ripme.StartInfo.FileName = "java";
             ripme.StartInfo.Arguments = " -jar \"" + RipMePath + "\" -u " + DownloadURL;
@@ -142,18 +137,18 @@ namespace MediaDownloader
         }
         public void ripme_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            this.Dispatcher.Invoke((Action)(() =>{
+            Dispatcher.Invoke(() =>{
                 if(e.Data != null)
                 {
-                    youtubedlURLBox.Text += e.Data.ToString() + System.Environment.NewLine + System.Environment.NewLine;
+                    youtubedlURLBox.Text += e.Data + Environment.NewLine + Environment.NewLine;
                     youtubedlURLBox.ScrollToEnd();
                 }
-            }));
+            });
         }
 
         private void ripMe_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            youtubedlURLBox.Text += System.Environment.NewLine + "Finished!";
+            youtubedlURLBox.Text += Environment.NewLine + "Finished!";
             killButton.IsEnabled = false;
             StartyouTubedlButton.IsEnabled = true;
             processWorker = null;
@@ -163,18 +158,21 @@ namespace MediaDownloader
         {
             string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
             Directory.SetCurrentDirectory(DownloadsFolder);
-            this.Dispatcher.Invoke((Action)(() => {
+            Dispatcher.Invoke(() => {
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
                 string AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location \"" + ffmpegPath + "\" ";
-                if (AudioButton.IsChecked.Value) { DefaultArguments = AudioArguments; };
+                if (AudioButton.IsChecked.Value) { DefaultArguments = AudioArguments; }
 
                 //Set the correct arguments when the Video Button is checked
                 string VideoArguments = "--continu --ignore-errors --no-overwrites --output \"%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
-                if (VideoButton.IsChecked.Value) { DefaultArguments = VideoArguments; };
+                if (VideoButton.IsChecked.Value) { DefaultArguments = VideoArguments; }
 
                 //Set the connection type of youtube-dl to IPv6, this option is still experimental, but I think it was a nice thing to add.
-                if (IPv6Box.IsChecked.Value) { DefaultArguments = DefaultArguments + "--force-ipv6 "; };
+                if (IPv6Box.IsChecked.Value) { DefaultArguments = DefaultArguments + "--force-ipv6 "; }
+
+                //Suppress HTTPS certificate validation
+                if (nocertificatecheckBox.IsChecked.Value) { DefaultArguments = DefaultArguments + "--no-check-certificate "; }
 
                 //If the limit speed textbox is not empty, we have to add the download limit to the arguments.
                 if (!string.IsNullOrEmpty(LimitSpeedBox.Text))
@@ -193,12 +191,12 @@ namespace MediaDownloader
                 {
                     DefaultArguments = DefaultArguments + "--video-password " + VideoPasswordTextBox.Password + " ";
                 }
-            }));
+            });
                 //Here is where we create the youtube-dl process, and start it.
                 //If the livesteam checkbox is checked, we will create a new windows, so users can stop the livestream download
                 //not a nice way to do this, since it just shows the youtube-dl console. But I could not find a way to do this differently.
             Process youtubedl = new Process();
-            this.Dispatcher.Invoke((Action)(() => {
+            Dispatcher.Invoke(() => {
                 if (LivestreamBox.IsChecked.Value || TwoFactorBox.IsChecked.Value)
                 {
                     youtubedl.StartInfo.CreateNoWindow = false;
@@ -206,7 +204,7 @@ namespace MediaDownloader
                 else {
                     youtubedl.StartInfo.CreateNoWindow = true;
                 }
-            }));
+            });
             youtubedl.StartInfo.UseShellExecute = false;
             youtubedl.StartInfo.FileName = YouTubeDLPath;
             youtubedl.StartInfo.Arguments = DefaultArguments + DownloadURL;
@@ -215,14 +213,16 @@ namespace MediaDownloader
             //After that we can start the download process
             youtubedl.StartInfo.RedirectStandardOutput = true;
             youtubedl.OutputDataReceived += new DataReceivedEventHandler(youtubeDL_Process_OutputDataReceived);
-            this.Dispatcher.Invoke((Action)(() => {
-                if (SeparateFolderBox.IsChecked.Value)
+            Dispatcher.Invoke(() =>
             {
-                Directory.CreateDirectory(SeparateFolderTextBox.Text);
-                DownloadsFolder = DownloadsFolder + SeparateFolderTextBox.Text;
-                Directory.SetCurrentDirectory(DownloadsFolder);
-            }
-            }));
+                if (SeparateFolderBox.IsChecked.Value)
+                {
+                    Directory.CreateDirectory(SeparateFolderTextBox.Text);
+                    DownloadsFolder = DownloadsFolder + SeparateFolderTextBox.Text;
+                    Directory.SetCurrentDirectory(DownloadsFolder);
+                }
+            });
+            MessageBox.Show(youtubedl.StartInfo.Arguments);
             youtubedl.Start();
             youtubedl.BeginOutputReadLine();
             youtubedl.WaitForExit();
@@ -230,17 +230,17 @@ namespace MediaDownloader
 
         public void youtubeDL_Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            this.Dispatcher.Invoke((Action)(() => {
+            Dispatcher.Invoke(() => {
                 if (e.Data != null)
                 {
-                    youtubedlURLBox.Text = e.Data.ToString();
+                    youtubedlURLBox.Text = e.Data;
                 }
-            }));
+            });
         }
 
         private void youtubeDL_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            youtubedlURLBox.Text += System.Environment.NewLine + "Finished!";
+            youtubedlURLBox.Text += Environment.NewLine + "Finished!";
             killButton.IsEnabled = false;
             StartyouTubedlButton.IsEnabled = true;
             processWorker = null;
@@ -293,6 +293,8 @@ namespace MediaDownloader
             VideoPasswordTextBox.Password = "Password";
             IPv6Box.IsEnabled = false;
             IPv6Box.IsChecked = false;
+            nocertificatecheckBox.IsEnabled = false;
+            nocertificatecheckBox.IsChecked = false;
         }
         private void RipMeBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -308,6 +310,7 @@ namespace MediaDownloader
             VideoPasswordBox.IsEnabled = true;
             VideoPasswordTextBox.Password = "Password";
             IPv6Box.IsEnabled = true;
+            nocertificatecheckBox.IsEnabled = true;
         }
 
         private void VideoPasswordBox_Checked(object sender, RoutedEventArgs e)

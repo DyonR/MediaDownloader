@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
              d:DesignWidth="630" d:DesignHeight="494">
     <Grid>
@@ -32,5 +30,6 @@
         <TextBox x:Name="youtubedlURLBox" HorizontalAlignment="Left" Height="157" Margin="9,290,0,0" TextWrapping="Wrap" Text="Paste your URL's in here!" VerticalAlignment="Top" Width="612" AcceptsReturn="True" GotFocus="youtubedlURLBox_GotFocus"/>
         <Button x:Name="removeHistory" Content="Remove RipMe download history" HorizontalAlignment="Left" Margin="350,253,0,0" VerticalAlignment="Top" Width="265" Click="removeHistory_Click"/>
         <Button x:Name="killButton" Content="Kill current downloads" HorizontalAlignment="Left" Margin="259,464,0,-2" VerticalAlignment="Top" Width="181" Click="killButton_Click" IsEnabled="False"/>
+        <CheckBox x:Name="nocertificatecheckBox" Content="No Certificate Check" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" ToolTip="Only check this when downloading fails or doesn't work (Suppress HTTPS certificate validation)."/>
     </Grid>
 </UserControl>

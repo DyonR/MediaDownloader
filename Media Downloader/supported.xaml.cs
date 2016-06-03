@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
@@ -10,7 +9,7 @@ namespace MediaDownloader
     /// <summary>
     /// Interaction logic for supported.xaml
     /// </summary>
-    public partial class supported : UserControl
+    public partial class supported
     {
         public supported()
         {
@@ -41,18 +40,18 @@ namespace MediaDownloader
                 youtubedl.StartInfo.FileName = YouTubeDLPath;
                 youtubedl.StartInfo.Arguments = " --list-extractors";
                 youtubedl.Start();
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     supportedTextBox.Text = youtubedl.StandardOutput.ReadToEnd();
-                }));
+                });
             }
             else
             {
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     supportedTextBox.Text = @"youtube-dl not found.
 Please go to the Updates tab, and download youtube-dl.";
-                }));
+                });
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
@@ -15,7 +14,7 @@ namespace MediaDownloader
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class updates : UserControl
+    public partial class updates
     {
         public updates()
         {
@@ -36,11 +35,11 @@ namespace MediaDownloader
         public string LatestRipMeVersion;
         public string CurrentRipMeVersion;
 
-        public int checkforUpdates = 0;
-        public int youtubedlUpdating = 0;
-        public int ripmeUpdating = 0;
-        public int ffmpegUpdating = 0;
-        public int rtmpdumpUpdating = 0; 
+        public int checkforUpdates;
+        public int youtubedlUpdating;
+        public int ripmeUpdating;
+        public int ffmpegUpdating;
+        public int rtmpdumpUpdating; 
 
         BackgroundWorker youtubedlWorker;
         BackgroundWorker youtubedlUpdateWorker;
@@ -153,31 +152,31 @@ namespace MediaDownloader
                 youtubedl.StartInfo.Arguments = " --version";
                 youtubedl.Start();
                 CurrentYouTubeDLVersion = youtubedl.StandardOutput.ReadToEnd();
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     CurrentYouTubeDLVersionText.Text = "Current youtube-dl.exe version: " + CurrentYouTubeDLVersion;
                     YouTubeDLVersionStatusText.Text = null;
                     UpdateYouTubeDL.IsEnabled = false;
-                }));
+                });
 
             }
             else {
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     CurrentYouTubeDLVersionText.Text = "Current youtube-dl.exe version: youtube-dl.exe not found.";
                     YouTubeDLVersionStatusText.Text = "youtube-dl.exe can not be found, please click the button below.";
                     UpdateYouTubeDL.Content = "Update youtube-dl";
                     UpdateYouTubeDL.IsEnabled = true;
-                }));
+                });
             }
         }
         private void youtubedlGetLatestVersion_Process()
         {
             LatestYoutubeDLVersion = Clientyoutubedl.DownloadString("https://yt-dl.org/latest/version");
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 LatestYouTubeDLVersionText.Text = "Latest youtube-dl.exe version: " + LatestYoutubeDLVersion;
-            }));
+            });
         }
         private void youtubedlCompareVersion_Process()
         {
@@ -188,46 +187,46 @@ namespace MediaDownloader
                 int YouTubeDLUptodate = CurrentYouTubeDLVersion.CompareTo(LatestYoutubeDLVersion);
                 if (YouTubeDLUptodate < 1)
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         YouTubeDLVersionStatusText.Text = "Your youtube-dl.exe is out of date, please click the button below to update.";
                         UpdateYouTubeDL.Content = "Update youtube-dl";
                         UpdateYouTubeDL.IsEnabled = true;
-                    }));
+                    });
                 }
                 else
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         YouTubeDLVersionStatusText.Text = "youtube-dl.exe is up to date!";
                         UpdateYouTubeDL.IsEnabled = false;
-                    }));
+                    });
                 }
             }
         }
         private void youtubedlInstallLastestVersion_Process()
         {
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 YouTubeDLVersionStatusText.Text = null;
                 UpdateYouTubeDL.Content = "Getting latest version...";
                 UpdateYouTubeDL.IsEnabled = false;
-            }));
+            });
             youtubedlGetLatestVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateYouTubeDL.Content = "Downloading youtube-dl...";
-            }));
+            });
             Clientyoutubedl.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", YouTubeDLPath);
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateYouTubeDL.Content = "Getting current version...";
-            }));
+            });
             youtubedlGetCurrentVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateYouTubeDL.Content = "Update finished";
-            }));
+            });
             youtubedlUpdating = 0;
         }
         private void RipMeGetCurrentVersion_Process()
@@ -250,21 +249,21 @@ namespace MediaDownloader
                 File.Delete("currentripme.txt");
                 char[] CurrentRipMeTrim = { 'I', 'n', 'i', 't', 'i', 'a', 'l', 'i', 'z', 'e', 'd', ' ', 'r', 'i', 'p', 'm', 'e', ' ', 'v' };
                 CurrentRipMeVersion = CurrentRipMeVersion.Trim(CurrentRipMeTrim);
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     CurrentRipMeVersionText.Text = "Current RipMe version: " + CurrentRipMeVersion;
                     RipMeVersionStatusText.Text = null;
                     UpdateRipMe.IsEnabled = false;
-                }));
+                });
             }
             else
             {
-                this.Dispatcher.Invoke((Action)(() => {
+                Dispatcher.Invoke(() => {
                     CurrentRipMeVersionText.Text = "Current RipMe version: ripme.jar not found";
                     RipMeVersionStatusText.Text = "ripme.jar can not be found, please click the button below.";
                     UpdateRipMe.Content = "Update RipMe";
                     UpdateRipMe.IsEnabled = true;
-                }));
+                });
             }
         }
         private void RipMeGetLatestVersion_Process()
@@ -274,10 +273,10 @@ namespace MediaDownloader
             File.Delete(LocalStorageFolder + "\\latestripme.txt");
             char[] LatestRipMeTrim = { ' ', ' ', '"', 'l', 'a', 't', 'e', 's', 't', 'V', 'e', 'r', 's', 'i', 'o', 'n', '"', ' ', ':', ' ', '"', '"', ',' };
             LatestRipMeVersion = LatestRipMeVersion.Trim(LatestRipMeTrim);
-           this.Dispatcher.Invoke((Action)(() =>
+           Dispatcher.Invoke(() =>
            {
                LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
-        }));
+        });
         }
         private void RipMeCompareVersion_Process()
         {
@@ -288,46 +287,46 @@ namespace MediaDownloader
                 int RipMeUptodate = CurrentRipMeVersion.CompareTo(LatestRipMeVersion);
                 if (RipMeUptodate < 0)
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         RipMeVersionStatusText.Text = "Your RipMe is out of date, please click the button below to update.";
                         UpdateRipMe.Content = "Update RipMe";
                         UpdateRipMe.IsEnabled = true;
-                    }));
+                    });
                 }
                 else
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         RipMeVersionStatusText.Text = "RipMe is up to date!";
                         UpdateRipMe.IsEnabled = false;
-                    }));
+                    });
                 }
             }
         }
         private void RipMeInstallLastestVersion_Process()
         {
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 RipMeVersionStatusText.Text = null;
                 UpdateRipMe.Content = "Getting latest version...";
                 UpdateRipMe.IsEnabled = false;
-            }));
+            });
             RipMeGetLatestVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Downloading RipMe...";
-            }));
+            });
             ClientRipMe.DownloadFile("http://rarchives.com/ripme.jar", RipMePath);
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Getting current version...";
-            }));
+            });
             RipMeGetCurrentVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Update finished";
-            }));
+            });
             ripmeUpdating = 0;
         }
         private void ffmpegGetCurrentVersion_Process()
@@ -335,22 +334,22 @@ namespace MediaDownloader
             if (File.Exists(ffmpegfolderPath + "\\bin\\version.txt"))
             {
                 CurrentFFmpegVersion = File.ReadLines(ffmpegfolderPath + "\\bin\\version.txt").First();
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     CurrentFFmpegVersionText.Text = "Current FFmpeg version: " + CurrentFFmpegVersion;
                     FFmpegVersionStatusText.Text = null;
                     UpdateFFmpeg.IsEnabled = false;
-                }));
+                });
             }
             else
             {
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                     CurrentFFmpegVersionText.Text = "Current FFmpeg version: FFmpeg not found.";
                     FFmpegVersionStatusText.Text = "ffmpeg can not be found, please click the button below.";
                     UpdateFFmpeg.Content = "Update FFmpeg";
                     UpdateFFmpeg.IsEnabled = true;
-                }));
+                });
             }
         }
         private void ffmpegGetLatestVersion_Process()
@@ -372,10 +371,10 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             GetFFmpeg.Start();
             GetFFmpeg.WaitForExit();
             LatestFFmpegVersion = File.ReadLines(LocalStorageFolder + "\\LastFFmpeg.txt").First();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 LatestFFmpegVersionText.Text = "Latest FFmpeg version: " + LatestFFmpegVersion;
-            }));
+            });
             try
             {
                 File.Delete(LocalStorageFolder + "\\LatestFFmpeg.txt");
@@ -399,31 +398,31 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
                 //Same version = 0
                 if (FFmpegUptodate == -1)
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         FFmpegVersionStatusText.Text = "Your FFmpeg is out of date, please click the button below to update.";
                         UpdateFFmpeg.Content = "Update FFmpeg";
                         UpdateFFmpeg.IsEnabled = true;
-                    }));
+                    });
                 }
                 else
                 {
-                    this.Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         FFmpegVersionStatusText.Text = "FFmpeg is up to date!";
                         UpdateFFmpeg.IsEnabled = false;
-                    }));
+                    });
                 }
             }
         }
         private void ffmpegInstallLastestVersion_Process()
         {
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 FFmpegVersionStatusText.Text = null;
                 UpdateFFmpeg.Content = "Getting latest version...";
                 UpdateFFmpeg.IsEnabled = false;
-            }));
+            });
             ffmpegGetLatestVersion_Process();
             try
             {
@@ -440,19 +439,19 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
                     MessageBox.Show(errorMessage.ToString());
                 }
             }
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Downloading 7-zip...";
-            }));
+            });
             Client7zip.DownloadFile("http://www.7-zip.org/a/7za920.zip", LocalStorageFolder + "\\7za.zip");
             ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\7za.zip");
             ZipEntry SevenZip = zip["7za.exe"];
             SevenZip.Extract(LocalStorageFolder, ExtractExistingFileAction.OverwriteSilently);
             zip.Dispose();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Downloading FFmpeg...";
-            }));
+            });
             ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.7z", LocalStorageFolder + "\\ffmpeg.7z");
             Process SevenZipExtract = new Process();
             SevenZipExtract.StartInfo.CreateNoWindow = true;
@@ -463,10 +462,10 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             SevenZipExtract.WaitForExit();
             File.Delete(LocalStorageFolder + "\\7za.exe");
 
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Moving files...";
-            }));
+            });
             Process UpdateFFmpegProcess = new Process();
             UpdateFFmpegProcess.StartInfo.CreateNoWindow = true;
             UpdateFFmpegProcess.StartInfo.UseShellExecute = false;
@@ -487,24 +486,24 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
 
 
             File.WriteAllText(ffmpegfolderPath + "\\bin\\version.txt", LatestFFmpegVersion);
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Getting current version...";
-            }));
+            });
             ffmpegGetCurrentVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Update finished";
-            }));
+            });
             ffmpegUpdating = 0;
         }
         private void RTMPDumpInstallLastestVersion_Process()
         {
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 DownloadRTMPDump.Content = "Downloading RTMPdump..";
                 DownloadRTMPDump.IsEnabled = false;
-            }));
+            });
             ClientRTMPDump.DownloadFile("https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.4-git-010913-windows.zip", LocalStorageFolder + "\\rtmpdump.zip");
             ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\rtmpdump.zip");
             ZipEntry rtmpdumpZip = zip["rtmpdump.exe"];
@@ -512,20 +511,20 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             zip.Dispose();
             File.Delete(LocalStorageFolder + "\\rtmpdump.zip");
             youtubedlGetCurrentVersion_Process();
-            this.Dispatcher.Invoke((Action)(() =>
+            Dispatcher.Invoke(() =>
             {
                 DownloadRTMPDump.Content = "Update finished";
-            }));
+            });
             rtmpdumpUpdating = 0;
         }
         private void RTMPDumpCompareVersion_Process()
         {
                 if (!File.Exists(RTMPDumpPath))
                 {
-                this.Dispatcher.Invoke((Action)(() => {
+                Dispatcher.Invoke(() => {
                     DownloadRTMPDump.Content = "Download RTMPDump";
                     DownloadRTMPDump.IsEnabled = true;
-                }));
+                });
             }
         }
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
@@ -533,10 +532,10 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             if (youtubedlUpdating == 0  && ripmeUpdating == 0 && ffmpegUpdating == 0 && rtmpdumpUpdating == 0)
             {
                 checkforUpdates = 1;
-                this.Dispatcher.Invoke((Action)(() =>
+                Dispatcher.Invoke(() =>
                 {
                 CheckForUpdates.IsEnabled = false;
-                }));
+                });
                 youtubedlUpdateWorker = new BackgroundWorker();
                 youtubedlUpdateWorker.WorkerReportsProgress = true;
                 youtubedlUpdateWorker.DoWork += (obj, ea) => youtubedlCompareVersion_Process();

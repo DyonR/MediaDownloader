@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MediaDownloader"
         xmlns:MediaDownloader="clr-namespace:MediaDownloader"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
-        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
         mc:Ignorable="d"
@@ -16,7 +14,7 @@
         TextElement.FontWeight="Normal"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        Title="Media Downloader v4.5" Height="575" Width="640" ResizeMode="CanMinimize">
+        Title="Media Downloader v4.5b" Height="575" Width="640" ResizeMode="CanMinimize">
     <Grid>
         <dragablz:TabablzControl>
             <TabItem Header="Downloader">
