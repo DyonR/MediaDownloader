@@ -58,7 +58,7 @@ Please go to the Updates tab, and download youtube-dl.";
         //Too bad, RipMe does not have a command to print all supported URLs, thus we need to manually enter it.
         private void ripmeButton_Checked(object sender, RoutedEventArgs e)
         {
-            supportedTextBox.Text = "4chan and other *chans\r\n500px\r\n8muses\r\nanonib\r\nbcfakes\r\nbutttoucher.com\r\ncheeby\r\ndatw.in\r\ndeviantart\r\ndrawcrowd\r\nfapproved\r\nflickr\r\nfuraffinity\r\nfuskator\r\ngifyo\r\n\"gonewild\"\r\nhentai-foundry\r\ni.rarchives.com\r\nimagebam\r\nimagestash.org\r\nimagevenue\r\nimgbox.com\r\nimgur (album, userpages, subreddits)\r\ninstagram\r\nkinkyshare.com\r\nmediacru.sh\r\nminus\r\nmodelmayhem\r\nmotherless\r\nnfsfw\r\nphotobucket\r\npornhub\r\nreddit\r\nseenive\r\nsmutty.com\r\nsupertangas\r\ntaptastic\r\nteenplanet\r\ntumblr\r\ntwitter\r\nvine\r\nvinebox\r\nvk.com (images, albums, video, and video albums)\r\nxhamster (images)";
+            supportedTextBox.Text = "4chan and other *chans\r\n8muses\r\n500px\r\n\"gonewild\"\r\nanonib\r\nbcfakes\r\nbutttoucher.com\r\ncheeby\r\ndatw.in\r\ndev\r\nantart\r\ndrawcrowd\r\nfapproved\r\nflickr\r\nfuraffinity\r\nfuskator\r\ngifyo\r\nhenta\r\ni.rarchives.com\r\nimagebam\r\nimagestash.org\r\nimagevenue\r\nimgbox.com\r\nimgur (album, userpages, subreddits)\r\ninstagram\r\nkinkyshare.com\r\nmediacru.sh\r\nminus\r\nmodelmayhem\r\nmotherless\r\nnfsfw\r\np\r\notobucket\r\npornhub\r\nreddit\r\nseenive\r\nsmutty.com\r\nsupertangas\r\ntaptastic\r\nteenplanet\r\ntumblr\r\ntwitter\r\nvine\r\nvinebox\r\nvk.com (images, albums, video, and video albums)\r\nxhamster (images)";
         }
     }
 }
