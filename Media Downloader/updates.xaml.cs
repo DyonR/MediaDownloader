@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
@@ -53,7 +53,6 @@ namespace MediaDownloader
         WebClient Clientyoutubedl = new WebClient();
         WebClient ClientRipMe = new WebClient();
         WebClient ClientFFmpeg = new WebClient();
-        WebClient Client7zip = new WebClient();
         WebClient ClientRTMPDump = new WebClient();
 
         private void update_Loaded(object sender, RoutedEventArgs e)
@@ -362,7 +361,7 @@ namespace MediaDownloader
 Set-Location $DownloadsLocation
 $FFmpegURL = Invoke-WebRequest ""http://ffmpeg.zeranoe.com/builds/win64/static/""
 ($FFmpegURL.ParsedHTML.getElementsByTagName(""div"") | Where {$_.className -eq 'container'}).innerText | Out-File ""$DownloadsLocation\LatestFFmpeg.txt""
-$LatestFFmpeg = Get-Content ""$DownloadsLocation\LatestFFmpeg.txt"" | Select -Skip 2 -First 1
+$LatestFFmpeg = Get-Content ""$DownloadsLocation\LatestFFmpeg.txt"" | Select -Skip 3 -First 1
 $LatestFFmpeg = $LatestFFmpeg.Trim(""      ffmpeg-"")
 $LatestFFmpeg = $LatestFFmpeg.Substring(0, $LatestFFmpeg.IndexOf('-'))
 $LatestFFmpeg | Out-File LastFFmpeg.txt");
@@ -441,48 +440,26 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             }
             Dispatcher.Invoke(() =>
             {
-                UpdateFFmpeg.Content = "Downloading 7-zip...";
-            });
-            Client7zip.DownloadFile("http://www.7-zip.org/a/7za920.zip", LocalStorageFolder + "\\7za.zip");
-            ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\7za.zip");
-            ZipEntry SevenZip = zip["7za.exe"];
-            SevenZip.Extract(LocalStorageFolder, ExtractExistingFileAction.OverwriteSilently);
-            zip.Dispose();
-            Dispatcher.Invoke(() =>
-            {
                 UpdateFFmpeg.Content = "Downloading FFmpeg...";
             });
-            ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.7z", LocalStorageFolder + "\\ffmpeg.7z");
-            Process SevenZipExtract = new Process();
-            SevenZipExtract.StartInfo.CreateNoWindow = true;
-            SevenZipExtract.StartInfo.UseShellExecute = false;
-            SevenZipExtract.StartInfo.FileName = LocalStorageFolder + "\\7za.exe";
-            SevenZipExtract.StartInfo.Arguments = "x -o\"" + ffmpegfolderPath + "\" \"" + LocalStorageFolder + "ffmpeg.7z\"";
-            SevenZipExtract.Start();
-            SevenZipExtract.WaitForExit();
-            File.Delete(LocalStorageFolder + "\\7za.exe");
-
+            ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip", LocalStorageFolder + "\\ffmpeg.zip");
+            ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\ffmpeg.zip");
+            foreach (ZipEntry file in zip)
+            {
+                file.Extract(LocalStorageFolder);
+            }
+            zip.Dispose();
             Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Moving files...";
             });
-            Process UpdateFFmpegProcess = new Process();
-            UpdateFFmpegProcess.StartInfo.CreateNoWindow = true;
-            UpdateFFmpegProcess.StartInfo.UseShellExecute = false;
-            File.WriteAllText(LocalStorageFolder + "\\UpdateFFmpeg.ps1", "Move-Item \"" + ffmpegfolderPath + "\\ffmpeg-*\\*\" \"" + ffmpegfolderPath + "\"; Remove-Item -Force -Confirm:$false -Recurse \"" + ffmpegfolderPath + "\\ffmpeg-*\"");
-            UpdateFFmpegProcess.StartInfo.FileName = "powershell.exe";
-            UpdateFFmpegProcess.StartInfo.Arguments = " -exec bypass -File \"" + LocalStorageFolder + "\\UpdateFFmpeg.ps1\"";
-            UpdateFFmpegProcess.Start();
-            UpdateFFmpegProcess.WaitForExit();
+            Directory.Move(LocalStorageFolder + "\\ffmpeg-latest-win64-static", LocalStorageFolder + "\\ffmpeg");
 
             try { File.Delete(LocalStorageFolder + "UpdateFFmpeg.ps1"); }
             catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\UpdateFFmpeg.ps1"); }
 
-            try { File.Delete(LocalStorageFolder + "\\7za.zip"); }
-            catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\7za.zip"); }
-
-            try { File.Delete(LocalStorageFolder + "\\ffmpeg.7z"); }
-            catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\ffmpeg.7z"); }
+            try { File.Delete(LocalStorageFolder + "\\ffmpeg.zip"); }
+            catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\ffmpeg.zip"); }
 
 
             File.WriteAllText(ffmpegfolderPath + "\\bin\\version.txt", LatestFFmpegVersion);
