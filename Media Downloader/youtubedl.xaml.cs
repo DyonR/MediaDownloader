@@ -350,8 +350,8 @@ namespace MediaDownloader
 
         private void killButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java en RTMPDump processes.
-If you have a Java process running, this will also get force closed.
+            MessageBoxResult WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java and RTMPDump processes.
+If you have a Java process running, these will also get force closed.
 Do you want to continue and kill the processes?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (WarningResult == MessageBoxResult.Yes) {
                 Process[] prs = Process.GetProcesses();
