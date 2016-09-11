@@ -31,7 +31,6 @@ namespace MediaDownloader
         public static string ffmpegPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ffmpeg\bin\ffmpeg.exe");
 
         //Here we need to define all string we use for different statements, this is so we can use the same string in if/else statements.
-        public string RipMeArguments;
         public string DefaultArguments;
         public string AudioArguments;
         public string VideoArguments;
