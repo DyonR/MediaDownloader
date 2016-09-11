@@ -267,15 +267,15 @@ namespace MediaDownloader
         }
         private void RipMeGetLatestVersion_Process()
         {
-            ClientRipMe.DownloadFile("http://www.rarchives.com/ripme.json", LocalStorageFolder + "\\latestripme.txt");
-            LatestRipMeVersion = File.ReadLines(LocalStorageFolder + "\\latestripme.txt").Skip(1).First();
-            File.Delete(LocalStorageFolder + "\\latestripme.txt");
+            string LatestRipMe = ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json");
+            string[] LatestRipMeVersion = LatestRipMe.Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray();
+            LatestRipMe = LatestRipMeVersion.First();
             char[] LatestRipMeTrim = { ' ', ' ', '"', 'l', 'a', 't', 'e', 's', 't', 'V', 'e', 'r', 's', 'i', 'o', 'n', '"', ' ', ':', ' ', '"', '"', ',' };
-            LatestRipMeVersion = LatestRipMeVersion.Trim(LatestRipMeTrim);
-           Dispatcher.Invoke(() =>
+            LatestRipMe = LatestRipMe.Trim(LatestRipMeTrim);
+            Dispatcher.Invoke(() =>
            {
-               LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
-        });
+                 LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMe;
+           });
         }
         private void RipMeCompareVersion_Process()
         {

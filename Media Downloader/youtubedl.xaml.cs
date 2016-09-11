@@ -324,27 +324,17 @@ namespace MediaDownloader
 
         private void removeHistory_Click(object sender, RoutedEventArgs e)
         {
-            try {
-                File.Delete(DownloadsFolder + "rip.properties");
-            }
-            catch
+            string[] ripMeHistoryFiles = { "rip.properties", "history.json", "ripme.log" };
+            foreach (string ripMeHistoryFile in ripMeHistoryFiles)
             {
-                MessageBox.Show("Can't delete " + DownloadsFolder + "rip.properties");
-            }
-            try {
-                File.Delete(DownloadsFolder + "history.json");
-            }
-            catch
-            {
-                MessageBox.Show("Can't delete " + DownloadsFolder + "history.json");
-            }
-            try
-            {
-                File.Delete(DownloadsFolder + "ripme.log");
-            }
-            catch
-            {
-                MessageBox.Show("Can't delete " + DownloadsFolder + "ripme.log");
+                try
+                {
+                    File.Delete(DownloadsFolder + ripMeHistoryFile);
+                }
+                catch
+                {
+                    MessageBox.Show("Can't delete " + DownloadsFolder + ripMeHistoryFile);
+                }
             }
         }
 
