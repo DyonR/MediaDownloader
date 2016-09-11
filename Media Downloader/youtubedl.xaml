@@ -28,7 +28,6 @@
         <CheckBox x:Name="RipMeBox" Content="Use RipMe, for pictures and albums" HorizontalAlignment="Left" Margin="350,230,0,0" VerticalAlignment="Top" Checked="RipMeBox_Checked" Unchecked="RipMeBox_Unchecked"/>
 
         <TextBox x:Name="youtubedlURLBox" HorizontalAlignment="Left" Height="157" Margin="9,290,0,0" TextWrapping="Wrap" Text="Paste your URL's in here!" VerticalAlignment="Top" Width="612" AcceptsReturn="True" GotFocus="youtubedlURLBox_GotFocus"/>
-        <Button x:Name="removeHistory" Content="Remove RipMe download history" HorizontalAlignment="Left" Margin="350,253,0,0" VerticalAlignment="Top" Width="265" Click="removeHistory_Click"/>
         <Button x:Name="killButton" Content="Kill current downloads" HorizontalAlignment="Left" Margin="259,464,0,-2" VerticalAlignment="Top" Width="181" Click="killButton_Click" IsEnabled="False"/>
         <CheckBox x:Name="nocertificatecheckBox" Content="No Certificate Check" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" ToolTip="Only check this when downloading fails or doesn't work (Suppress HTTPS certificate validation)."/>
     </Grid>
