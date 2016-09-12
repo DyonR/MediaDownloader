@@ -8,6 +8,7 @@ using System.Net;
 using Ionic.Zip;
 using System.ComponentModel;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace MediaDownloader
 {
@@ -35,11 +36,11 @@ namespace MediaDownloader
         public string LatestRipMeVersion;
         public string CurrentRipMeVersion;
 
-        public int checkforUpdates;
-        public int youtubedlUpdating;
-        public int ripmeUpdating;
-        public int ffmpegUpdating;
-        public int rtmpdumpUpdating; 
+        public bool checkforUpdates = false;
+        public bool youtubedlUpdating = false;
+        public bool ripmeUpdating = false;
+        public bool ffmpegUpdating = false;
+        public bool rtmpdumpUpdating = false;
 
         BackgroundWorker youtubedlWorker;
         BackgroundWorker youtubedlUpdateWorker;
@@ -81,12 +82,12 @@ namespace MediaDownloader
         }
         private void UpdateYouTubeDL_Click(object sender, RoutedEventArgs e)
         {
-            if (checkforUpdates != 1)
+            if (checkforUpdates == false)
             {
                 youtubedlUpdateWorker = new BackgroundWorker();
                 youtubedlUpdateWorker.WorkerReportsProgress = true;
                 youtubedlUpdateWorker.DoWork += (obj, ea) => youtubedlInstallLastestVersion_Process();
-                youtubedlUpdateWorker.RunWorkerAsync(youtubedlUpdating = 1);
+                youtubedlUpdateWorker.RunWorkerAsync(youtubedlUpdating = true);
             }
             else
             {
@@ -96,12 +97,12 @@ namespace MediaDownloader
 
         private void UpdateRipMe_Click(object sender, RoutedEventArgs e)
         {
-            if (checkforUpdates != 1)
+            if (checkforUpdates == false)
             {
                 ripmeUpdateWorker = new BackgroundWorker();
                 ripmeUpdateWorker.WorkerReportsProgress = true;
                 ripmeUpdateWorker.DoWork += (obj, ea) => RipMeInstallLastestVersion_Process();
-                ripmeUpdateWorker.RunWorkerAsync(ripmeUpdating = 1);
+                ripmeUpdateWorker.RunWorkerAsync(ripmeUpdating = true);
             }
             else
             {
@@ -111,12 +112,12 @@ namespace MediaDownloader
 
         private void UpdateFFmpeg_Click(object sender, RoutedEventArgs e)
         {
-            if (checkforUpdates != 1)
+            if (checkforUpdates == false)
             {
                 ffmpegUpdateWorker = new BackgroundWorker();
                 ffmpegUpdateWorker.WorkerReportsProgress = true;
                 ffmpegUpdateWorker.DoWork += (obj, ea) => ffmpegInstallLastestVersion_Process();
-                ffmpegUpdateWorker.RunWorkerAsync(ffmpegUpdating = 1);
+                ffmpegUpdateWorker.RunWorkerAsync(ffmpegUpdating = true);
             }
             else
             {
@@ -125,12 +126,12 @@ namespace MediaDownloader
         }
         private void DownloadRTMPDump_Click(object sender, RoutedEventArgs e)
         {
-            if (checkforUpdates != 1)
+            if (checkforUpdates == false)
             {
                 RTMPDumpUpdateWorker = new BackgroundWorker();
                 RTMPDumpUpdateWorker.WorkerReportsProgress = true;
                 RTMPDumpUpdateWorker.DoWork += (obj, ea) => RTMPDumpInstallLastestVersion_Process();
-                RTMPDumpUpdateWorker.RunWorkerAsync(rtmpdumpUpdating = 1);
+                RTMPDumpUpdateWorker.RunWorkerAsync(rtmpdumpUpdating = true);
             }
             else
             {
@@ -226,7 +227,7 @@ namespace MediaDownloader
             {
                 UpdateYouTubeDL.Content = "Update finished";
             });
-            youtubedlUpdating = 0;
+            youtubedlUpdating = false;
         }
         private void RipMeGetCurrentVersion_Process()
         {
@@ -243,11 +244,10 @@ namespace MediaDownloader
                 ripme.Start();
 
                 //Getting the current RipMe version
-                File.WriteAllText("currentripme.txt", ripme.StandardOutput.ReadToEnd());
-                CurrentRipMeVersion = File.ReadLines("currentripme.txt").Skip(2).First();
-                File.Delete("currentripme.txt");
-                char[] CurrentRipMeTrim = { 'I', 'n', 'i', 't', 'i', 'a', 'l', 'i', 'z', 'e', 'd', ' ', 'r', 'i', 'p', 'm', 'e', ' ', 'v' };
-                CurrentRipMeVersion = CurrentRipMeVersion.Trim(CurrentRipMeTrim);
+                CurrentRipMeVersion = ripme.StandardOutput.ReadToEnd()
+                    .Split(Environment.NewLine.ToCharArray())[4]
+                    .Replace("Initialized ripme v", "");
+
                 Dispatcher.Invoke(() =>
                 {
                     CurrentRipMeVersionText.Text = "Current RipMe version: " + CurrentRipMeVersion;
@@ -267,14 +267,11 @@ namespace MediaDownloader
         }
         private void RipMeGetLatestVersion_Process()
         {
-            string LatestRipMe = ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json");
-            string[] LatestRipMeVersion = LatestRipMe.Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray();
-            LatestRipMe = LatestRipMeVersion.First();
-            char[] LatestRipMeTrim = { ' ', ' ', '"', 'l', 'a', 't', 'e', 's', 't', 'V', 'e', 'r', 's', 'i', 'o', 'n', '"', ' ', ':', ' ', '"', '"', ',' };
-            LatestRipMe = LatestRipMe.Trim(LatestRipMeTrim);
+            JObject LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json"));
+            LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
             Dispatcher.Invoke(() =>
            {
-                 LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMe;
+                 LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
            });
         }
         private void RipMeCompareVersion_Process()
@@ -283,6 +280,9 @@ namespace MediaDownloader
             RipMeGetLatestVersion_Process();
             if (File.Exists(RipMePath))
             {
+                //Higher version than newest = 1
+                //Outdated = -1
+                //Same version = 0
                 int RipMeUptodate = CurrentRipMeVersion.CompareTo(LatestRipMeVersion);
                 if (RipMeUptodate < 0)
                 {
@@ -326,7 +326,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Update finished";
             });
-            ripmeUpdating = 0;
+            ripmeUpdating = false;
         }
         private void ffmpegGetCurrentVersion_Process()
         {
@@ -472,7 +472,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             {
                 UpdateFFmpeg.Content = "Update finished";
             });
-            ffmpegUpdating = 0;
+            ffmpegUpdating = false;
         }
         private void RTMPDumpInstallLastestVersion_Process()
         {
@@ -492,7 +492,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
             {
                 DownloadRTMPDump.Content = "Update finished";
             });
-            rtmpdumpUpdating = 0;
+            rtmpdumpUpdating = false;
         }
         private void RTMPDumpCompareVersion_Process()
         {
@@ -506,9 +506,9 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
         }
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
-            if (youtubedlUpdating == 0  && ripmeUpdating == 0 && ffmpegUpdating == 0 && rtmpdumpUpdating == 0)
+            if (youtubedlUpdating == false  && ripmeUpdating == false && ffmpegUpdating == false && rtmpdumpUpdating == false)
             {
-                checkforUpdates = 1;
+                checkforUpdates = true;
                 Dispatcher.Invoke(() =>
                 {
                 CheckForUpdates.IsEnabled = false;
@@ -553,7 +553,7 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
         private void RTMPDumpUpdateWorker_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
             CheckForUpdates.IsEnabled = true;
-            checkforUpdates = 0;
+            checkforUpdates = false;
         }
     }
 }
