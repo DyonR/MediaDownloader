@@ -55,27 +55,37 @@ namespace MediaDownloader
         private void youtubedlURLBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (youtubedlURLBox.Text == "Paste your URL's in here!" || youtubedlURLBox.Text.Contains("Finished!"))
+            { 
                 youtubedlURLBox.Text = null;
+            }
         }
         private void SeparateFolderTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SeparateFolderTextBox.Text == "Enter the folder name here")
+            { 
                 SeparateFolderTextBox.Text = null;
+            }
         }
         private void UsernameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (UsernameTextBox.Text == "Username")
+            { 
                 UsernameTextBox.Text = null;
+            }
         }
         private void PasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (PasswordTextBox.Password == "Password")
+            {
                 PasswordTextBox.Password = null;
+            }
         }
         private void VideoPasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (VideoPasswordTextBox.Password == "Password")
+            {
                 VideoPasswordTextBox.Password = null;
+            }
         }
 
 
@@ -92,7 +102,6 @@ namespace MediaDownloader
             {
                 processWorker = new BackgroundWorker();
                 processWorker.WorkerReportsProgress = true;
-                //We replace each new line in the URL text box with spaces, so we can download multiple URLs at once
                 DownloadURL = null;
 
                 //First, we check if the RipMe checkbox is checked, if that is the case, we will use the RipMe process.
@@ -143,7 +152,8 @@ namespace MediaDownloader
             Dispatcher.Invoke(() =>{
                 if(e.Data != null)
                 {
-                    if(youtubedlURLBox.Text.Length >= 50000){
+                    if(youtubedlURLBox.Text.Length >= 50000)
+                    {
                         youtubedlURLBox.Text = null;
                     }
                     youtubedlURLBox.Text += e.Data + Environment.NewLine;
