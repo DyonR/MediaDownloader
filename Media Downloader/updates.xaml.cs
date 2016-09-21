@@ -172,11 +172,20 @@ namespace MediaDownloader
         }
         private void youtubedlGetLatestVersion_Process()
         {
+            try {
             LatestYoutubeDLVersion = Clientyoutubedl.DownloadString("https://yt-dl.org/latest/version");
             Dispatcher.Invoke(() =>
             {
                 LatestYouTubeDLVersionText.Text = "Latest youtube-dl.exe version: " + LatestYoutubeDLVersion;
             });
+            }
+            catch
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    LatestYouTubeDLVersionText.Text = "Unable to obtain the latest youtube-dl version.";
+                });
+            }
         }
         private void youtubedlCompareVersion_Process()
         {
@@ -267,12 +276,21 @@ namespace MediaDownloader
         }
         private void RipMeGetLatestVersion_Process()
         {
-            JObject LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json"));
-            LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
-            Dispatcher.Invoke(() =>
-           {
-                 LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
-           });
+            try {
+                JObject LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json"));
+                LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
+                Dispatcher.Invoke(() =>
+               {
+                   LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
+               });
+            
+            }
+            catch{
+                Dispatcher.Invoke(() =>
+                {
+                    LatestRipMeVersionText.Text = "Unable to obtain the latest RipMe version.";
+                });
+            }
         }
         private void RipMeCompareVersion_Process()
         {
