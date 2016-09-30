@@ -346,19 +346,7 @@ Do you want to continue and kill the processes?", "Are you sure?", MessageBoxBut
                 Process[] prs = Process.GetProcesses();
                 foreach (Process pr in prs)
                 {
-                    if (pr.ProcessName == "youtube-dl")
-                    {
-                        pr.Kill();
-                    }
-                    if (pr.ProcessName == "ffmpeg")
-                    {
-                        pr.Kill();
-                    }
-                    if (pr.ProcessName == "java")
-                    {
-                        pr.Kill();
-                    }
-                    if (pr.ProcessName == "rtmpdump")
+                    if (pr.ProcessName == "youtube-dl" || pr.ProcessName == "ffmpeg" || pr.ProcessName == "java" || pr.ProcessName == "rtmpdump")
                     {
                         pr.Kill();
                     }
