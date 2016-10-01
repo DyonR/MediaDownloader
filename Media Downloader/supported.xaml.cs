@@ -30,8 +30,8 @@ namespace MediaDownloader
 
         public void youtubedlSupported_Process()
         {
-            if(File.Exists(YouTubeDLPath))
-            { 
+            if (File.Exists(YouTubeDLPath))
+            {
                 Process youtubedl = new Process();
                 youtubedl.StartInfo.CreateNoWindow = true;
                 youtubedl.StartInfo.UseShellExecute = false;

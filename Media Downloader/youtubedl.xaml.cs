@@ -55,21 +55,21 @@ namespace MediaDownloader
         private void youtubedlURLBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (youtubedlURLBox.Text == "Paste your URL's in here!" || youtubedlURLBox.Text.Contains("Finished!"))
-            { 
+            {
                 youtubedlURLBox.Text = null;
             }
         }
         private void SeparateFolderTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SeparateFolderTextBox.Text == "Enter the folder name here")
-            { 
+            {
                 SeparateFolderTextBox.Text = null;
             }
         }
         private void UsernameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (UsernameTextBox.Text == "Username")
-            { 
+            {
                 UsernameTextBox.Text = null;
             }
         }
@@ -123,7 +123,8 @@ namespace MediaDownloader
 
         public void ripMe_Process()
         {
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 DownloadURLs = youtubedlURLBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 youtubedlURLBox.Text = null;
                 killButton.IsEnabled = true;
@@ -149,10 +150,11 @@ namespace MediaDownloader
         }
         public void ripme_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(() =>{
-                if(e.Data != null)
+            Dispatcher.Invoke(() =>
+            {
+                if (e.Data != null)
                 {
-                    if(youtubedlURLBox.Text.Length >= 50000)
+                    if (youtubedlURLBox.Text.Length >= 50000)
                     {
                         youtubedlURLBox.Text = null;
                     }
@@ -173,7 +175,8 @@ namespace MediaDownloader
         public void youtubeDL_Process()
         {
             Process youtubedl = new Process();
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 DownloadURL = youtubedlURLBox.Text.Replace(Environment.NewLine, " ");
                 killButton.IsEnabled = true;
 
@@ -214,7 +217,7 @@ namespace MediaDownloader
                 {
                     DefaultArguments = DefaultArguments + "--video-password " + VideoPasswordTextBox.Password + " ";
                 }
-                
+
                 //If the livesteam checkbox is checked, we will create a new windows, so users can stop the livestream download
                 //not a nice way to do this, since it just shows the youtube-dl console. But I could not find a way to do this differently.
 
@@ -222,7 +225,8 @@ namespace MediaDownloader
                 {
                     youtubedl.StartInfo.CreateNoWindow = false;
                 }
-                else {
+                else
+                {
                     youtubedl.StartInfo.CreateNoWindow = true;
                 }
             });
@@ -237,14 +241,15 @@ namespace MediaDownloader
             youtubedl.Start();
             youtubedl.BeginOutputReadLine();
             youtubedl.WaitForExit();
-            
+
             //Revert back to the original DownloadsFolder again
             DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
-    }
+        }
 
         public void youtubeDL_Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 if (e.Data != null)
                 {
                     youtubedlURLBox.Text = e.Data;
@@ -342,7 +347,8 @@ namespace MediaDownloader
             MessageBoxResult WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java and RTMPDump processes.
 If you have a Java process running, these will also get force closed.
 Do you want to continue and kill the processes?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (WarningResult == MessageBoxResult.Yes) {
+            if (WarningResult == MessageBoxResult.Yes)
+            {
                 Process[] prs = Process.GetProcesses();
                 foreach (Process pr in prs)
                 {

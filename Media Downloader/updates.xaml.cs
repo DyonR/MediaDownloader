@@ -9,6 +9,7 @@ using Ionic.Zip;
 using System.ComponentModel;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using HtmlAgilityPack;
 
 namespace MediaDownloader
 {
@@ -160,7 +161,8 @@ namespace MediaDownloader
                 });
 
             }
-            else {
+            else
+            {
                 Dispatcher.Invoke(() =>
                 {
                     CurrentYouTubeDLVersionText.Text = "Current youtube-dl.exe version: youtube-dl.exe not found.";
@@ -257,7 +259,8 @@ namespace MediaDownloader
             }
             else
             {
-                Dispatcher.Invoke(() => {
+                Dispatcher.Invoke(() =>
+                {
                     CurrentRipMeVersionText.Text = "Current RipMe version: ripme.jar not found";
                     RipMeVersionStatusText.Text = "ripme.jar can not be found, please click the button below.";
                     UpdateRipMe.Content = "Update RipMe";
@@ -271,7 +274,7 @@ namespace MediaDownloader
             LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
             Dispatcher.Invoke(() =>
            {
-                 LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
+               LatestRipMeVersionText.Text = "Latest RipMe version: " + LatestRipMeVersion;
            });
         }
         private void RipMeCompareVersion_Process()
@@ -353,36 +356,25 @@ namespace MediaDownloader
         }
         private void ffmpegGetLatestVersion_Process()
         {
-            Process GetFFmpeg = new Process();
-            GetFFmpeg.StartInfo.CreateNoWindow = true;
-            GetFFmpeg.StartInfo.UseShellExecute = false;
-            File.WriteAllText(LocalStorageFolder + "\\Getffmpeg.ps1",
-            @"$DownloadsLocation = $env:LOCALAPPDATA + ""\Media Downloader""
-Set-Location $DownloadsLocation
-$FFmpegURL = Invoke-WebRequest ""http://ffmpeg.zeranoe.com/builds/win64/static/""
-($FFmpegURL.ParsedHTML.getElementsByTagName(""div"") | Where {$_.className -eq 'container'}).innerText | Out-File ""$DownloadsLocation\LatestFFmpeg.txt""
-$LatestFFmpeg = Get-Content ""$DownloadsLocation\LatestFFmpeg.txt"" | Select -Skip 3 -First 1
-$LatestFFmpeg = $LatestFFmpeg.Trim(""      ffmpeg-"")
-$LatestFFmpeg = $LatestFFmpeg.Substring(0, $LatestFFmpeg.IndexOf('-'))
-$LatestFFmpeg | Out-File LastFFmpeg.txt");
-            GetFFmpeg.StartInfo.FileName = "powershell.exe";
-            GetFFmpeg.StartInfo.Arguments = " -exec bypass -File \"" + LocalStorageFolder + "\\Getffmpeg.ps1\"";
-            GetFFmpeg.Start();
-            GetFFmpeg.WaitForExit();
-            LatestFFmpegVersion = File.ReadLines(LocalStorageFolder + "\\LastFFmpeg.txt").First();
-            Dispatcher.Invoke(() =>
-            {
-                LatestFFmpegVersionText.Text = "Latest FFmpeg version: " + LatestFFmpegVersion;
-            });
             try
             {
-                File.Delete(LocalStorageFolder + "\\LatestFFmpeg.txt");
-                File.Delete(LocalStorageFolder + "\\LastFFmpeg.txt");
-                File.Delete(LocalStorageFolder + "\\Getffmpeg.ps1");
+                HtmlDocument ffmpegHtmlDocument = new HtmlDocument();
+                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/"));
+                foreach (HtmlNode metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//div[contains(@class,'container')]"))
+                {
+                    LatestFFmpegVersion = metaTag.InnerHtml;
+                }
+                LatestFFmpegVersion = LatestFFmpegVersion.Split(Environment.NewLine.ToCharArray())[4];
+                LatestFFmpegVersion = LatestFFmpegVersion.Trim("      <a href=\"ffmpeg-".ToCharArray());
+                LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
+                Dispatcher.Invoke(() =>
+                {
+                    LatestFFmpegVersionText.Text = "Latest FFmpeg version: " + LatestFFmpegVersion;
+                });
             }
             catch (Exception)
             {
-                MessageBox.Show("Unable to delete LatestFFmpeg.txt, LastFFmpeg.txt or Getffmpeg.ps1");
+                MessageBox.Show("Unable to get latetst FFmpeg version");
             }
         }
         private void ffmpegCompareVersion_Process()
@@ -496,9 +488,10 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
         }
         private void RTMPDumpCompareVersion_Process()
         {
-                if (!File.Exists(RTMPDumpPath))
+            if (!File.Exists(RTMPDumpPath))
+            {
+                Dispatcher.Invoke(() =>
                 {
-                Dispatcher.Invoke(() => {
                     DownloadRTMPDump.Content = "Download RTMPDump";
                     DownloadRTMPDump.IsEnabled = true;
                 });
@@ -506,12 +499,12 @@ $LatestFFmpeg | Out-File LastFFmpeg.txt");
         }
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
-            if (youtubedlUpdating == false  && ripmeUpdating == false && ffmpegUpdating == false && rtmpdumpUpdating == false)
+            if (youtubedlUpdating == false && ripmeUpdating == false && ffmpegUpdating == false && rtmpdumpUpdating == false)
             {
                 checkforUpdates = true;
                 Dispatcher.Invoke(() =>
                 {
-                CheckForUpdates.IsEnabled = false;
+                    CheckForUpdates.IsEnabled = false;
                 });
                 youtubedlUpdateWorker = new BackgroundWorker();
                 youtubedlUpdateWorker.WorkerReportsProgress = true;
