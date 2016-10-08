@@ -23,7 +23,7 @@ namespace MediaDownloader
 
         //We have to get the Downloads Folder location, we do this by using the registry so we can find the Downloads folder of the user, most times, this is C:\Users\Username\Downloads.
         //But, since it can vary from user to user, we use the registry to make sure.
-        public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
+        public static string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
         public static string LocalStorageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\");
         public static string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
         public static string RipMePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ripme.jar");
@@ -32,6 +32,7 @@ namespace MediaDownloader
         public static string RTMPDumpPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\rtmpdump.exe");
 
         //Here we need to define all string we use for different statements, this is so we can use the same string in if/else statements.
+        public string SeparateFolder;
         public string DefaultArguments;
         public string AudioArguments;
         public string VideoArguments;
@@ -93,6 +94,7 @@ namespace MediaDownloader
         //Let's start the fun, the magic download button.
         private void StartyouTubedlButton_Click(object sender, RoutedEventArgs e)
         {
+            SeparateFolder = DownloadsFolder;
             //If the URL box contains the default text or is empty, we will give the user a error message after the button has been pressed.
             if (!youtubedlURLBox.Text.Contains(".") || !File.Exists(YouTubeDLPath) || !File.Exists(RipMePath) || !File.Exists(ffmpegPath))
             {
@@ -101,13 +103,16 @@ namespace MediaDownloader
             //If the URL does not contain the default text, we can continue with our script.
             else
             {
+
                 processWorker = new BackgroundWorker();
                 processWorker.WorkerReportsProgress = true;
+                processWorker.WorkerSupportsCancellation = true;
                 DownloadURL = null;
 
                 //First, we check if the RipMe checkbox is checked, if that is the case, we will use the RipMe process.
                 if (RipMeBox.IsChecked.Value)
                 {
+                    SeparateFolder = SeparateFolder.Remove(SeparateFolder.Length - 1);
                     processWorker.DoWork += (obj, ea) => ripMe_Process();
                     processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ripMe_Process_Complete);
                     processWorker.RunWorkerAsync();
@@ -119,6 +124,11 @@ namespace MediaDownloader
                     processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(youtubeDL_Process_Complete);
                     processWorker.RunWorkerAsync();
                 }
+            }
+            if (SeparateFolderBox.IsChecked.Value)
+            {
+                SeparateFolder = DownloadsFolder + SeparateFolderTextBox.Text;
+                Directory.CreateDirectory(SeparateFolder);
             }
         }
 
@@ -142,8 +152,7 @@ namespace MediaDownloader
             foreach (string URL in DownloadURLs)
             {
                 try { ripme.CancelOutputRead(); } catch { }
-                ripme.StartInfo.Arguments = " -jar \"" + RipMePath + "\" --saveorder --no-prop-file --ripsdirectory \"" + DownloadsFolder + "\\RipMe\" --url " + URL;
-                Console.Write(ripme.StartInfo.Arguments);
+                ripme.StartInfo.Arguments = " -jar \"" + RipMePath + "\" --saveorder --no-prop-file --ripsdirectory \"" + SeparateFolder + "\" --url " + URL;
                 ripme.Start();
                 ripme.BeginOutputReadLine();
                 ripme.WaitForExit();
@@ -183,16 +192,11 @@ namespace MediaDownloader
 
                 //If the SeparateFolderBox is checked, we need to create that directory and change to DownloaderFolder string to that folder
                 StartyouTubedlButton.IsEnabled = false;
-                if (SeparateFolderBox.IsChecked.Value)
-                {
-                    DownloadsFolder = DownloadsFolder + SeparateFolderTextBox.Text + "\\";
-                    Directory.CreateDirectory(DownloadsFolder);
-                }
-                AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"" + DownloadsFolder + "%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location \"" + ffmpegPath + "\" ";
+                AudioArguments = "--continue --ignore-errors --no-overwrites --extract-audio --output \"" + SeparateFolder + "%(title)s.%(ext)s\" --audio-format mp3 --audio-quality 0 --ffmpeg-location \"" + ffmpegPath + "\" ";
                 if (AudioButton.IsChecked.Value) { DefaultArguments = AudioArguments; }
 
                 //Set the correct arguments when the Video Button is checked
-                VideoArguments = "--continu --ignore-errors --no-overwrites --output \"" + DownloadsFolder + "%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
+                VideoArguments = "--continu --ignore-errors --no-overwrites --output \"" + SeparateFolder + "%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
                 if (VideoButton.IsChecked.Value) { DefaultArguments = VideoArguments; }
 
                 //Set the connection type of youtube-dl to IPv6, this option is still experimental, but I think it was a nice thing to add.
@@ -242,9 +246,6 @@ namespace MediaDownloader
             youtubedl.Start();
             youtubedl.BeginOutputReadLine();
             youtubedl.WaitForExit();
-
-            //Revert back to the original DownloadsFolder again
-            DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + ("\\Media Downloads\\");
         }
 
         public void youtubeDL_Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -297,9 +298,6 @@ namespace MediaDownloader
             AudioButton.IsChecked = false;
             VideoButton.IsEnabled = false;
             VideoButton.IsChecked = false;
-            SeparateFolderBox.IsEnabled = false;
-            SeparateFolderBox.IsChecked = false;
-            SeparateFolderTextBox.Text = "Enter the folder name here";
             LimitSpeedBox.IsEnabled = false;
             LimitSpeedBox.Text = null;
             LivestreamBox.IsEnabled = false;
@@ -321,7 +319,6 @@ namespace MediaDownloader
             AudioButton.IsEnabled = true;
             AudioButton.IsChecked = true;
             VideoButton.IsEnabled = true;
-            SeparateFolderBox.IsEnabled = true;
             LimitSpeedBox.IsEnabled = true;
             LivestreamBox.IsEnabled = true;
             LoginBox.IsEnabled = true;
