@@ -18,8 +18,6 @@ namespace MediaDownloader
 
         BackgroundWorker youtubedlSupported;
 
-        public string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
-
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
         {
             youtubedlSupported = new BackgroundWorker();
@@ -30,14 +28,14 @@ namespace MediaDownloader
 
         public void youtubedlSupported_Process()
         {
-            if (File.Exists(YouTubeDLPath))
+            if (File.Exists(youtubedl.YouTubeDLPath))
             {
                 Process youtubedl = new Process();
                 youtubedl.StartInfo.CreateNoWindow = true;
                 youtubedl.StartInfo.UseShellExecute = false;
                 youtubedl.StartInfo.RedirectStandardOutput = true;
                 youtubedl.StartInfo.RedirectStandardError = true;
-                youtubedl.StartInfo.FileName = YouTubeDLPath;
+                youtubedl.StartInfo.FileName = MediaDownloader.youtubedl.YouTubeDLPath;
                 youtubedl.StartInfo.Arguments = " --list-extractors";
                 youtubedl.Start();
                 Dispatcher.Invoke(() =>

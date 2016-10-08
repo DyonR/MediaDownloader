@@ -23,12 +23,6 @@ namespace MediaDownloader
             InitializeComponent();
             Loaded += update_Loaded;
         }
-        public string DownloadsFolder = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + (@"\Media Downloads");
-        public string LocalStorageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\");
-        public string YouTubeDLPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\youtube-dl.exe");
-        public string RipMePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ripme.jar");
-        public string ffmpegfolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ffmpeg");
-        public string RTMPDumpPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\rtmpdump.exe");
 
         public string LatestYoutubeDLVersion;
         public string CurrentYouTubeDLVersion;
@@ -141,7 +135,7 @@ namespace MediaDownloader
         }
         private void youtubedlGetCurrentVersion_Process()
         {
-            if (File.Exists(YouTubeDLPath))
+            if (File.Exists(youtubedl.YouTubeDLPath))
             {
                 //Here I get the current version of youtube-dl.exe, to get the version number, we have to run youtube-dl.exe --version
                 Process youtubedl = new Process();
@@ -149,7 +143,7 @@ namespace MediaDownloader
                 youtubedl.StartInfo.UseShellExecute = false;
                 youtubedl.StartInfo.RedirectStandardOutput = true;
                 youtubedl.StartInfo.RedirectStandardError = true;
-                youtubedl.StartInfo.FileName = YouTubeDLPath;
+                youtubedl.StartInfo.FileName = MediaDownloader.youtubedl.YouTubeDLPath;
                 youtubedl.StartInfo.Arguments = " --version";
                 youtubedl.Start();
                 CurrentYouTubeDLVersion = youtubedl.StandardOutput.ReadToEnd();
@@ -184,7 +178,7 @@ namespace MediaDownloader
         {
             youtubedlGetCurrentVersion_Process();
             youtubedlGetLatestVersion_Process();
-            if (File.Exists(YouTubeDLPath))
+            if (File.Exists(youtubedl.YouTubeDLPath))
             {
                 int YouTubeDLUptodate = CurrentYouTubeDLVersion.CompareTo(LatestYoutubeDLVersion);
                 if (YouTubeDLUptodate < 1)
@@ -219,7 +213,7 @@ namespace MediaDownloader
             {
                 UpdateYouTubeDL.Content = "Downloading youtube-dl...";
             });
-            Clientyoutubedl.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", YouTubeDLPath);
+            Clientyoutubedl.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", youtubedl.YouTubeDLPath);
             Dispatcher.Invoke(() =>
             {
                 UpdateYouTubeDL.Content = "Getting current version...";
@@ -233,16 +227,16 @@ namespace MediaDownloader
         }
         private void RipMeGetCurrentVersion_Process()
         {
-            if (File.Exists(RipMePath))
+            if (File.Exists(youtubedl.RipMePath))
             {
-                Directory.SetCurrentDirectory(LocalStorageFolder);
+                Directory.SetCurrentDirectory(youtubedl.LocalStorageFolder);
                 Process ripme = new Process();
                 ripme.StartInfo.CreateNoWindow = true;
                 ripme.StartInfo.UseShellExecute = false;
                 ripme.StartInfo.RedirectStandardOutput = true;
                 ripme.StartInfo.RedirectStandardError = true;
                 ripme.StartInfo.FileName = "java";
-                ripme.StartInfo.Arguments = " -jar \"" + RipMePath + "\" --help";
+                ripme.StartInfo.Arguments = " -jar \"" + youtubedl.RipMePath + "\" --help";
                 ripme.Start();
 
                 //Getting the current RipMe version
@@ -281,7 +275,7 @@ namespace MediaDownloader
         {
             RipMeGetCurrentVersion_Process();
             RipMeGetLatestVersion_Process();
-            if (File.Exists(RipMePath))
+            if (File.Exists(youtubedl.RipMePath))
             {
                 //Higher version than newest = 1
                 //Outdated = -1
@@ -319,7 +313,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Downloading RipMe...";
             });
-            ClientRipMe.DownloadFile("http://rarchives.com/ripme.jar", RipMePath);
+            ClientRipMe.DownloadFile("http://rarchives.com/ripme.jar", youtubedl.RipMePath);
             Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Getting current version...";
@@ -333,9 +327,9 @@ namespace MediaDownloader
         }
         private void ffmpegGetCurrentVersion_Process()
         {
-            if (File.Exists(ffmpegfolderPath + "\\bin\\version.txt"))
+            if (File.Exists(youtubedl.ffmpegfolderPath + "\\bin\\version.txt"))
             {
-                CurrentFFmpegVersion = File.ReadLines(ffmpegfolderPath + "\\bin\\version.txt").First();
+                CurrentFFmpegVersion = File.ReadLines(youtubedl.ffmpegfolderPath + "\\bin\\version.txt").First();
                 Dispatcher.Invoke(() =>
                 {
                     CurrentFFmpegVersionText.Text = "Current FFmpeg version: " + CurrentFFmpegVersion;
@@ -381,7 +375,7 @@ namespace MediaDownloader
         {
             ffmpegGetCurrentVersion_Process();
             ffmpegGetLatestVersion_Process();
-            if (File.Exists(ffmpegfolderPath + "\\bin\\version.txt"))
+            if (File.Exists(youtubedl.ffmpegfolderPath + "\\bin\\version.txt"))
             {
                 int FFmpegUptodate = CurrentFFmpegVersion.CompareTo(LatestFFmpegVersion);
                 //Higher version = 1
@@ -417,14 +411,14 @@ namespace MediaDownloader
             ffmpegGetLatestVersion_Process();
             try
             {
-                Directory.Delete(ffmpegfolderPath, true);
+                Directory.Delete(youtubedl.ffmpegfolderPath, true);
             }
             catch (Exception)
             {
-                if (Directory.Exists(ffmpegfolderPath))
+                if (Directory.Exists(youtubedl.ffmpegfolderPath))
                 {
                     var errorMessage = new StringBuilder();
-                    errorMessage.AppendLine("Can not delete " + ffmpegfolderPath + ".");
+                    errorMessage.AppendLine("Can not delete " + youtubedl.ffmpegfolderPath + ".");
                     errorMessage.AppendLine("If you never installed FFmpeg, you can ignore this.");
                     errorMessage.AppendLine("Updating might fail.");
                     MessageBox.Show(errorMessage.ToString());
@@ -434,27 +428,24 @@ namespace MediaDownloader
             {
                 UpdateFFmpeg.Content = "Downloading FFmpeg...";
             });
-            ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip", LocalStorageFolder + "\\ffmpeg.zip");
-            ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\ffmpeg.zip");
+            ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip", youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
+            ZipFile zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
             foreach (ZipEntry file in zip)
             {
-                file.Extract(LocalStorageFolder);
+                file.Extract(youtubedl.LocalStorageFolder);
             }
             zip.Dispose();
             Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Moving files...";
             });
-            Directory.Move(LocalStorageFolder + "\\ffmpeg-latest-win64-static", LocalStorageFolder + "\\ffmpeg");
+            Directory.Move(youtubedl.LocalStorageFolder + "\\ffmpeg-latest-win64-static", youtubedl.LocalStorageFolder + "\\ffmpeg");
 
-            try { File.Delete(LocalStorageFolder + "UpdateFFmpeg.ps1"); }
-            catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\UpdateFFmpeg.ps1"); }
-
-            try { File.Delete(LocalStorageFolder + "\\ffmpeg.zip"); }
-            catch { MessageBox.Show("Unable to delete: " + LocalStorageFolder + "\\ffmpeg.zip"); }
+            try { File.Delete(youtubedl.LocalStorageFolder + "\\ffmpeg.zip"); }
+            catch { MessageBox.Show("Unable to delete: " + youtubedl.LocalStorageFolder + "\\ffmpeg.zip"); }
 
 
-            File.WriteAllText(ffmpegfolderPath + "\\bin\\version.txt", LatestFFmpegVersion);
+            File.WriteAllText(youtubedl.ffmpegfolderPath + "\\bin\\version.txt", LatestFFmpegVersion);
             Dispatcher.Invoke(() =>
             {
                 UpdateFFmpeg.Content = "Getting current version...";
@@ -473,12 +464,12 @@ namespace MediaDownloader
                 DownloadRTMPDump.Content = "Downloading RTMPdump..";
                 DownloadRTMPDump.IsEnabled = false;
             });
-            ClientRTMPDump.DownloadFile("https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.4-git-010913-windows.zip", LocalStorageFolder + "\\rtmpdump.zip");
-            ZipFile zip = ZipFile.Read(LocalStorageFolder + "\\rtmpdump.zip");
+            ClientRTMPDump.DownloadFile("https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.4-git-010913-windows.zip", youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
+            ZipFile zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
             ZipEntry rtmpdumpZip = zip["rtmpdump.exe"];
-            rtmpdumpZip.Extract(LocalStorageFolder);
+            rtmpdumpZip.Extract(youtubedl.LocalStorageFolder);
             zip.Dispose();
-            File.Delete(LocalStorageFolder + "\\rtmpdump.zip");
+            File.Delete(youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
             youtubedlGetCurrentVersion_Process();
             Dispatcher.Invoke(() =>
             {
@@ -488,7 +479,7 @@ namespace MediaDownloader
         }
         private void RTMPDumpCompareVersion_Process()
         {
-            if (!File.Exists(RTMPDumpPath))
+            if (!File.Exists(youtubedl.RTMPDumpPath))
             {
                 Dispatcher.Invoke(() =>
                 {

@@ -29,6 +29,7 @@ namespace MediaDownloader
         public static string RipMePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ripme.jar");
         public static string ffmpegfolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ffmpeg");
         public static string ffmpegPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\ffmpeg\bin\ffmpeg.exe");
+        public static string RTMPDumpPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + (@"\Media Downloader\rtmpdump.exe");
 
         //Here we need to define all string we use for different statements, this is so we can use the same string in if/else statements.
         public string DefaultArguments;
