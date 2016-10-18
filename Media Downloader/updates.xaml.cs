@@ -363,7 +363,6 @@ namespace MediaDownloader
                     string hrefValue = metaTag.GetAttributeValue("href", string.Empty);
                     downloadLinks.Add(hrefValue);
                 }
-                //8
                 LatestFFmpegVersion = downloadLinks[7];
                 LatestFFmpegVersion = LatestFFmpegVersion.Trim("ffmpeg-".ToCharArray());
                 LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
