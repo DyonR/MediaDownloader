@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using HtmlAgilityPack;
+using System.Collections.Generic;
 
 namespace MediaDownloader
 {
@@ -50,6 +51,8 @@ namespace MediaDownloader
         WebClient ClientRipMe = new WebClient();
         WebClient ClientFFmpeg = new WebClient();
         WebClient ClientRTMPDump = new WebClient();
+
+        List<string> downloadLinks = new List<string>();
 
         private void update_Loaded(object sender, RoutedEventArgs e)
         {
@@ -354,12 +357,15 @@ namespace MediaDownloader
             {
                 HtmlDocument ffmpegHtmlDocument = new HtmlDocument();
                 ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/"));
-                foreach (HtmlNode metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//div[contains(@class,'container')]"))
+
+                foreach (HtmlNode metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
                 {
-                    LatestFFmpegVersion = metaTag.InnerHtml;
+                    string hrefValue = metaTag.GetAttributeValue("href", string.Empty);
+                    downloadLinks.Add(hrefValue);
                 }
-                LatestFFmpegVersion = LatestFFmpegVersion.Split(Environment.NewLine.ToCharArray())[4];
-                LatestFFmpegVersion = LatestFFmpegVersion.Trim("      <a href=\"ffmpeg-".ToCharArray());
+                //8
+                LatestFFmpegVersion = downloadLinks[7];
+                LatestFFmpegVersion = LatestFFmpegVersion.Trim("ffmpeg-".ToCharArray());
                 LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
                 Dispatcher.Invoke(() =>
                 {
