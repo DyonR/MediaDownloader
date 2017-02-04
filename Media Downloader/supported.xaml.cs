@@ -20,8 +20,7 @@ namespace MediaDownloader
 
         private void youtubedlButton_Checked(object sender, RoutedEventArgs e)
         {
-            youtubedlSupported = new BackgroundWorker();
-            youtubedlSupported.WorkerReportsProgress = true;
+            youtubedlSupported = new BackgroundWorker {WorkerReportsProgress = true};
             youtubedlSupported.DoWork += (obj, ea) => youtubedlSupported_Process();
             youtubedlSupported.RunWorkerAsync();
         }
@@ -30,13 +29,18 @@ namespace MediaDownloader
         {
             if (File.Exists(youtubedl.YouTubeDLPath))
             {
-                Process youtubedl = new Process();
-                youtubedl.StartInfo.CreateNoWindow = true;
-                youtubedl.StartInfo.UseShellExecute = false;
-                youtubedl.StartInfo.RedirectStandardOutput = true;
-                youtubedl.StartInfo.RedirectStandardError = true;
-                youtubedl.StartInfo.FileName = MediaDownloader.youtubedl.YouTubeDLPath;
-                youtubedl.StartInfo.Arguments = " --list-extractors";
+                var youtubedl = new Process
+                {
+                    StartInfo =
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        FileName = MediaDownloader.youtubedl.YouTubeDLPath,
+                        Arguments = " --list-extractors"
+                    }
+                };
                 youtubedl.Start();
                 Dispatcher.Invoke(() =>
                 {

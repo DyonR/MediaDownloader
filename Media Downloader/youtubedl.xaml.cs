@@ -19,7 +19,7 @@ namespace MediaDownloader
             Loaded += youtubedl_Loaded;
         }
 
-        BackgroundWorker processWorker;
+        BackgroundWorker _processWorker;
 
         //We have to get the Downloads Folder location, we do this by using the registry so we can find the Downloads folder of the user, most times, this is C:\Users\Username\Downloads.
         //But, since it can vary from user to user, we use the registry to make sure.
@@ -104,25 +104,25 @@ namespace MediaDownloader
             else
             {
 
-                processWorker = new BackgroundWorker();
-                processWorker.WorkerReportsProgress = true;
-                processWorker.WorkerSupportsCancellation = true;
+                _processWorker = new BackgroundWorker();
+                _processWorker.WorkerReportsProgress = true;
+                _processWorker.WorkerSupportsCancellation = true;
                 DownloadURL = null;
 
                 //First, we check if the RipMe checkbox is checked, if that is the case, we will use the RipMe process.
                 if (RipMeBox.IsChecked.Value)
                 {
                     SeparateFolder = SeparateFolder.Remove(SeparateFolder.Length - 1);
-                    processWorker.DoWork += (obj, ea) => ripMe_Process();
-                    processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ripMe_Process_Complete);
-                    processWorker.RunWorkerAsync();
+                    _processWorker.DoWork += (obj, ea) => ripMe_Process();
+                    _processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ripMe_Process_Complete);
+                    _processWorker.RunWorkerAsync();
 
                 }
                 else
                 {
-                    processWorker.DoWork += (obj, ea) => youtubeDL_Process();
-                    processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(youtubeDL_Process_Complete);
-                    processWorker.RunWorkerAsync();
+                    _processWorker.DoWork += (obj, ea) => youtubeDL_Process();
+                    _processWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(youtubeDL_Process_Complete);
+                    _processWorker.RunWorkerAsync();
                 }
             }
             if (SeparateFolderBox.IsChecked.Value)
@@ -136,20 +136,25 @@ namespace MediaDownloader
         {
             Dispatcher.Invoke(() =>
             {
-                DownloadURLs = youtubedlURLBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                DownloadURLs = youtubedlURLBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 youtubedlURLBox.Text = null;
                 killButton.IsEnabled = true;
                 StartyouTubedlButton.IsEnabled = false;
             });
 
-            Process ripme = new Process();
-            ripme.StartInfo.UseShellExecute = false;
-            ripme.StartInfo.CreateNoWindow = true;
-            ripme.StartInfo.RedirectStandardOutput = true;
-            ripme.OutputDataReceived += new DataReceivedEventHandler(ripme_OutputDataReceived);
+            var ripme = new Process
+            {
+                StartInfo =
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true
+                }
+            };
+            ripme.OutputDataReceived += ripme_OutputDataReceived;
             ripme.StartInfo.FileName = "java";
 
-            foreach (string URL in DownloadURLs)
+            foreach (var URL in DownloadURLs)
             {
                 try { ripme.CancelOutputRead(); } catch { }
                 ripme.StartInfo.Arguments = " -jar \"" + RipMePath + "\" --saveorder --no-prop-file --ripsdirectory \"" + SeparateFolder + "\" --url " + URL;
@@ -179,7 +184,7 @@ namespace MediaDownloader
             youtubedlURLBox.Text += Environment.NewLine + "Finished!";
             killButton.IsEnabled = false;
             StartyouTubedlButton.IsEnabled = true;
-            processWorker = null;
+            _processWorker = null;
         }
 
         public void youtubeDL_Process()
@@ -242,7 +247,7 @@ namespace MediaDownloader
             //If the Separate Folder box is checked, we need to create this directory and set our current working location to there.
             //After that we can start the download process
             youtubedl.StartInfo.RedirectStandardOutput = true;
-            youtubedl.OutputDataReceived += new DataReceivedEventHandler(youtubeDL_Process_OutputDataReceived);
+            youtubedl.OutputDataReceived += youtubeDL_Process_OutputDataReceived;
             youtubedl.Start();
             youtubedl.BeginOutputReadLine();
             youtubedl.WaitForExit();
@@ -264,7 +269,7 @@ namespace MediaDownloader
             youtubedlURLBox.Text += Environment.NewLine + "Finished!";
             killButton.IsEnabled = false;
             StartyouTubedlButton.IsEnabled = true;
-            processWorker = null;
+            _processWorker = null;
         }
 
         //Down here, we just enable of disable some boxes, nothing too exicting.
@@ -342,13 +347,13 @@ namespace MediaDownloader
 
         private void killButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java and RTMPDump processes.
+            var WarningResult = MessageBox.Show(@"This will kill all the current youtube-dl, FFmpeg, Java and RTMPDump processes.
 If you have a Java process running, these will also get force closed.
 Do you want to continue and kill the processes?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (WarningResult == MessageBoxResult.Yes)
             {
-                Process[] prs = Process.GetProcesses();
-                foreach (Process pr in prs)
+                var prs = Process.GetProcesses();
+                foreach (var pr in prs)
                 {
                     if (pr.ProcessName == "youtube-dl" || pr.ProcessName == "ffmpeg" || pr.ProcessName == "java" || pr.ProcessName == "rtmpdump")
                     {

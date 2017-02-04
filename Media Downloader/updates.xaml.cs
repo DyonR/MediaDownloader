@@ -58,23 +58,19 @@ namespace MediaDownloader
         {
             Loaded -= update_Loaded;
 
-            youtubedlWorker = new BackgroundWorker();
-            youtubedlWorker.WorkerReportsProgress = true;
+            youtubedlWorker = new BackgroundWorker {WorkerReportsProgress = true};
             youtubedlWorker.DoWork += (obj, ea) => youtubedlGetCurrentVersion_Process();
             youtubedlWorker.RunWorkerAsync();
 
-            ffmpegWorker = new BackgroundWorker();
-            ffmpegWorker.WorkerReportsProgress = true;
+            ffmpegWorker = new BackgroundWorker {WorkerReportsProgress = true};
             ffmpegWorker.DoWork += (obj, ea) => ffmpegGetCurrentVersion_Process();
             ffmpegWorker.RunWorkerAsync();
 
-            ripmeWorker = new BackgroundWorker();
-            ripmeWorker.WorkerReportsProgress = true;
+            ripmeWorker = new BackgroundWorker {WorkerReportsProgress = true};
             ripmeWorker.DoWork += (obj, ea) => RipMeGetCurrentVersion_Process();
             ripmeWorker.RunWorkerAsync();
 
-            RTMPDumpWorker = new BackgroundWorker();
-            RTMPDumpWorker.WorkerReportsProgress = true;
+            RTMPDumpWorker = new BackgroundWorker {WorkerReportsProgress = true};
             RTMPDumpWorker.DoWork += (obj, ea) => RTMPDumpCompareVersion_Process();
             RTMPDumpWorker.RunWorkerAsync();
         }
@@ -82,8 +78,7 @@ namespace MediaDownloader
         {
             if (checkforUpdates == false)
             {
-                youtubedlUpdateWorker = new BackgroundWorker();
-                youtubedlUpdateWorker.WorkerReportsProgress = true;
+                youtubedlUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
                 youtubedlUpdateWorker.DoWork += (obj, ea) => youtubedlInstallLastestVersion_Process();
                 youtubedlUpdateWorker.RunWorkerAsync(youtubedlUpdating = true);
             }
@@ -97,13 +92,13 @@ namespace MediaDownloader
         {
             if (checkforUpdates == false)
             {
-                ripmeUpdateWorker = new BackgroundWorker();
-                ripmeUpdateWorker.WorkerReportsProgress = true;
+                ripmeUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
                 ripmeUpdateWorker.DoWork += (obj, ea) => RipMeInstallLastestVersion_Process();
                 ripmeUpdateWorker.RunWorkerAsync(ripmeUpdating = true);
             }
             else
             {
+                MessageBox.Show("Please don't install and check for updates at the same time!", "Check and Install error", MessageBoxButton.OK, MessageBoxImage.Error);
                 MessageBox.Show("Please don't install and check for updates at the same time!", "Check and Install error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -112,8 +107,7 @@ namespace MediaDownloader
         {
             if (checkforUpdates == false)
             {
-                ffmpegUpdateWorker = new BackgroundWorker();
-                ffmpegUpdateWorker.WorkerReportsProgress = true;
+                ffmpegUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
                 ffmpegUpdateWorker.DoWork += (obj, ea) => ffmpegInstallLastestVersion_Process();
                 ffmpegUpdateWorker.RunWorkerAsync(ffmpegUpdating = true);
             }
@@ -141,13 +135,18 @@ namespace MediaDownloader
             if (File.Exists(youtubedl.YouTubeDLPath))
             {
                 //Here I get the current version of youtube-dl.exe, to get the version number, we have to run youtube-dl.exe --version
-                Process youtubedl = new Process();
-                youtubedl.StartInfo.CreateNoWindow = true;
-                youtubedl.StartInfo.UseShellExecute = false;
-                youtubedl.StartInfo.RedirectStandardOutput = true;
-                youtubedl.StartInfo.RedirectStandardError = true;
-                youtubedl.StartInfo.FileName = MediaDownloader.youtubedl.YouTubeDLPath;
-                youtubedl.StartInfo.Arguments = " --version";
+                var youtubedl = new Process
+                {
+                    StartInfo =
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        FileName = MediaDownloader.youtubedl.YouTubeDLPath,
+                        Arguments = " --version"
+                    }
+                };
                 youtubedl.Start();
                 CurrentYouTubeDLVersion = youtubedl.StandardOutput.ReadToEnd();
                 Dispatcher.Invoke(() =>
@@ -183,7 +182,7 @@ namespace MediaDownloader
             youtubedlGetLatestVersion_Process();
             if (File.Exists(youtubedl.YouTubeDLPath))
             {
-                int YouTubeDLUptodate = CurrentYouTubeDLVersion.CompareTo(LatestYoutubeDLVersion);
+                var YouTubeDLUptodate = CurrentYouTubeDLVersion.CompareTo(LatestYoutubeDLVersion);
                 if (YouTubeDLUptodate < 1)
                 {
                     Dispatcher.Invoke(() =>
@@ -233,13 +232,18 @@ namespace MediaDownloader
             if (File.Exists(youtubedl.RipMePath))
             {
                 Directory.SetCurrentDirectory(youtubedl.LocalStorageFolder);
-                Process ripme = new Process();
-                ripme.StartInfo.CreateNoWindow = true;
-                ripme.StartInfo.UseShellExecute = false;
-                ripme.StartInfo.RedirectStandardOutput = true;
-                ripme.StartInfo.RedirectStandardError = true;
-                ripme.StartInfo.FileName = "java";
-                ripme.StartInfo.Arguments = " -jar \"" + youtubedl.RipMePath + "\" --help";
+                var ripme = new Process
+                {
+                    StartInfo =
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        FileName = "java",
+                        Arguments = " -jar \"" + youtubedl.RipMePath + "\" --help"
+                    }
+                };
                 ripme.Start();
 
                 //Getting the current RipMe version
@@ -267,7 +271,7 @@ namespace MediaDownloader
         }
         private void RipMeGetLatestVersion_Process()
         {
-            JObject LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("http://www.rarchives.com/ripme.json"));
+            var LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("https://raw.githubusercontent.com/4pr0n/ripme/master/ripme.json"));
             LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
             Dispatcher.Invoke(() =>
            {
@@ -283,7 +287,7 @@ namespace MediaDownloader
                 //Higher version than newest = 1
                 //Outdated = -1
                 //Same version = 0
-                int RipMeUptodate = CurrentRipMeVersion.CompareTo(LatestRipMeVersion);
+                var RipMeUptodate = CurrentRipMeVersion.CompareTo(LatestRipMeVersion);
                 if (RipMeUptodate < 0)
                 {
                     Dispatcher.Invoke(() =>
@@ -316,7 +320,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Downloading RipMe...";
             });
-            ClientRipMe.DownloadFile("http://rarchives.com/ripme.jar", youtubedl.RipMePath);
+            ClientRipMe.DownloadFile("https://github.com/4pr0n/ripme/releases/download/1.4.1/ripme.jar", youtubedl.RipMePath);
             Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Getting current version...";
@@ -355,12 +359,12 @@ namespace MediaDownloader
         {
             try
             {
-                HtmlDocument ffmpegHtmlDocument = new HtmlDocument();
+                var ffmpegHtmlDocument = new HtmlDocument();
                 ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/"));
 
-                foreach (HtmlNode metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
+                foreach (var metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
                 {
-                    string hrefValue = metaTag.GetAttributeValue("href", string.Empty);
+                    var hrefValue = metaTag.GetAttributeValue("href", string.Empty);
                     downloadLinks.Add(hrefValue);
                 }
                 LatestFFmpegVersion = downloadLinks[7];
@@ -382,7 +386,7 @@ namespace MediaDownloader
             ffmpegGetLatestVersion_Process();
             if (File.Exists(youtubedl.ffmpegfolderPath + "\\bin\\version.txt"))
             {
-                int FFmpegUptodate = CurrentFFmpegVersion.CompareTo(LatestFFmpegVersion);
+                var FFmpegUptodate = CurrentFFmpegVersion.CompareTo(LatestFFmpegVersion);
                 //Higher version = 1
                 //Outdated = -1 
                 //Same version = 0
@@ -434,8 +438,8 @@ namespace MediaDownloader
                 UpdateFFmpeg.Content = "Downloading FFmpeg...";
             });
             ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip", youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
-            ZipFile zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
-            foreach (ZipEntry file in zip)
+            var zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
+            foreach (var file in zip)
             {
                 file.Extract(youtubedl.LocalStorageFolder);
             }
@@ -470,8 +474,8 @@ namespace MediaDownloader
                 DownloadRTMPDump.IsEnabled = false;
             });
             ClientRTMPDump.DownloadFile("https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.4-git-010913-windows.zip", youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
-            ZipFile zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
-            ZipEntry rtmpdumpZip = zip["rtmpdump.exe"];
+            var zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
+            var rtmpdumpZip = zip["rtmpdump.exe"];
             rtmpdumpZip.Extract(youtubedl.LocalStorageFolder);
             zip.Dispose();
             File.Delete(youtubedl.LocalStorageFolder + "\\rtmpdump.zip");
@@ -502,10 +506,9 @@ namespace MediaDownloader
                 {
                     CheckForUpdates.IsEnabled = false;
                 });
-                youtubedlUpdateWorker = new BackgroundWorker();
-                youtubedlUpdateWorker.WorkerReportsProgress = true;
+                youtubedlUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
                 youtubedlUpdateWorker.DoWork += (obj, ea) => youtubedlCompareVersion_Process();
-                youtubedlUpdateWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(youtubedlUpdateWorker_Process_Complete);
+                youtubedlUpdateWorker.RunWorkerCompleted += youtubedlUpdateWorker_Process_Complete;
                 youtubedlUpdateWorker.RunWorkerAsync();
             }
             else
@@ -515,27 +518,24 @@ namespace MediaDownloader
         }
         private void youtubedlUpdateWorker_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            ripmeUpdateWorker = new BackgroundWorker();
-            ripmeUpdateWorker.WorkerReportsProgress = true;
+            ripmeUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
             ripmeUpdateWorker.DoWork += (obj, ea) => RipMeCompareVersion_Process();
-            ripmeUpdateWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ripmeUpdateWorker_Process_Complete);
+            ripmeUpdateWorker.RunWorkerCompleted += ripmeUpdateWorker_Process_Complete;
             ripmeUpdateWorker.RunWorkerAsync();
         }
         private void ripmeUpdateWorker_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            ffmpegUpdateWorker = new BackgroundWorker();
-            ffmpegUpdateWorker.WorkerReportsProgress = true;
+            ffmpegUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
             ffmpegUpdateWorker.DoWork += (obj, ea) => ffmpegCompareVersion_Process();
-            ffmpegUpdateWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ffmpegUpdateWorker_Process_Complete);
+            ffmpegUpdateWorker.RunWorkerCompleted += ffmpegUpdateWorker_Process_Complete;
             ffmpegUpdateWorker.RunWorkerAsync();
         }
 
         private void ffmpegUpdateWorker_Process_Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            RTMPDumpUpdateWorker = new BackgroundWorker();
-            RTMPDumpUpdateWorker.WorkerReportsProgress = true;
+            RTMPDumpUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
             RTMPDumpUpdateWorker.DoWork += (obj, ea) => RTMPDumpCompareVersion_Process();
-            RTMPDumpUpdateWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RTMPDumpUpdateWorker_Process_Complete);
+            RTMPDumpUpdateWorker.RunWorkerCompleted += RTMPDumpUpdateWorker_Process_Complete;
             RTMPDumpUpdateWorker.RunWorkerAsync();
         }
 
