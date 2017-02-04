@@ -120,8 +120,7 @@ namespace MediaDownloader
         {
             if (checkforUpdates == false)
             {
-                RTMPDumpUpdateWorker = new BackgroundWorker();
-                RTMPDumpUpdateWorker.WorkerReportsProgress = true;
+                RTMPDumpUpdateWorker = new BackgroundWorker {WorkerReportsProgress = true};
                 RTMPDumpUpdateWorker.DoWork += (obj, ea) => RTMPDumpInstallLastestVersion_Process();
                 RTMPDumpUpdateWorker.RunWorkerAsync(rtmpdumpUpdating = true);
             }
@@ -320,7 +319,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Downloading RipMe...";
             });
-            ClientRipMe.DownloadFile("https://github.com/4pr0n/ripme/releases/download/1.4.1/ripme.jar", youtubedl.RipMePath);
+            ClientRipMe.DownloadFile("https://github.com/4pr0n/ripme/releases/download/" + LatestRipMeVersion + "/ripme.jar", youtubedl.RipMePath);
             Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Getting current version...";
