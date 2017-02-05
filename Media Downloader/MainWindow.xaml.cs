@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Net;
+using Microsoft.Win32;
 
 namespace MediaDownloader
 {
@@ -32,6 +34,10 @@ Either your internet is not working or Google.com is unreachable.", "No internet
                 Application.Current.Shutdown();
                 return false;
             }
+        }
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + "\\Media Downloads\\");
         }
     }
 }

@@ -15,17 +15,20 @@
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Title="Media Downloader" Height="575" Width="640" ResizeMode="CanMinimize">
-    <Grid>
-        <dragablz:TabablzControl>
-            <TabItem Header="Downloader">
-                <MediaDownloader:youtubedl/>
-            </TabItem>
-            <TabItem Header="Updates">
-                <MediaDownloader:updates/>
-            </TabItem>
-            <TabItem Header="Supported URL's">
-                <MediaDownloader:supported/>
-            </TabItem>
-        </dragablz:TabablzControl>
-    </Grid>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Name="OpenFolderButton" Content="open downloads folder" Click="OpenFolderButton_Click" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <dragablz:TabablzControl>
+        <TabItem Header="Downloader">
+            <MediaDownloader:youtubedl/>
+        </TabItem>
+        <TabItem Header="Updates">
+            <MediaDownloader:updates/>
+        </TabItem>
+        <TabItem Header="Supported URL's">
+            <MediaDownloader:supported/>
+        </TabItem>
+    </dragablz:TabablzControl>
 </Controls:MetroWindow>

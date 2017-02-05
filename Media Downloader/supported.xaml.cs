@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
-using System;
 
 namespace MediaDownloader
 {
