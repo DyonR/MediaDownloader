@@ -358,14 +358,14 @@ namespace MediaDownloader
             try
             {
                 var ffmpegHtmlDocument = new HtmlDocument();
-                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/"));
+                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/?C=N&O=D"));
 
                 foreach (var metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
                 {
                     var hrefValue = metaTag.GetAttributeValue("href", string.Empty);
                     downloadLinks.Add(hrefValue);
                 }
-                LatestFFmpegVersion = downloadLinks[7];
+                LatestFFmpegVersion = downloadLinks[12];
                 LatestFFmpegVersion = LatestFFmpegVersion.Trim("ffmpeg-".ToCharArray());
                 LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
                 Dispatcher.Invoke(() =>
