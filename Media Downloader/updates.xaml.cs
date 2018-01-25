@@ -98,7 +98,6 @@ namespace MediaDownloader
             else
             {
                 MessageBox.Show("Please don't install and check for updates at the same time!", "Check and Install error", MessageBoxButton.OK, MessageBoxImage.Error);
-                MessageBox.Show("Please don't install and check for updates at the same time!", "Check and Install error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -269,7 +268,7 @@ namespace MediaDownloader
         }
         private void RipMeGetLatestVersion_Process()
         {
-            var LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("https://raw.githubusercontent.com/4pr0n/ripme/master/ripme.json"));
+            var LatestRipMeJson = JObject.Parse(ClientRipMe.DownloadString("https://raw.githubusercontent.com/ripmeapp/ripme/master/ripme.json"));
             LatestRipMeVersion = (string)LatestRipMeJson["latestVersion"];
             Dispatcher.Invoke(() =>
            {
@@ -318,7 +317,7 @@ namespace MediaDownloader
             {
                 UpdateRipMe.Content = "Downloading RipMe...";
             });
-            ClientRipMe.DownloadFile("https://github.com/4pr0n/ripme/releases/download/" + LatestRipMeVersion + "/ripme.jar", youtubedl.RipMePath);
+            ClientRipMe.DownloadFile("https://github.com/ripmeapp/ripme/releases/download/" + LatestRipMeVersion + "/ripme.jar", youtubedl.RipMePath);
             Dispatcher.Invoke(() =>
             {
                 UpdateRipMe.Content = "Getting current version...";
@@ -365,7 +364,7 @@ namespace MediaDownloader
                     var hrefValue = metaTag.GetAttributeValue("href", string.Empty);
                     downloadLinks.Add(hrefValue);
                 }
-                LatestFFmpegVersion = downloadLinks[12];
+                LatestFFmpegVersion = downloadLinks[7];
                 LatestFFmpegVersion = LatestFFmpegVersion.Trim("ffmpeg-".ToCharArray());
                 LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
                 Dispatcher.Invoke(() =>
