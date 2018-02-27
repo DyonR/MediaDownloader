@@ -21,6 +21,7 @@ namespace MediaDownloader
         public updates()
         {
             InitializeComponent();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             Loaded += update_Loaded;
         }
 
@@ -357,7 +358,7 @@ namespace MediaDownloader
             try
             {
                 var ffmpegHtmlDocument = new HtmlDocument();
-                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("http://ffmpeg.zeranoe.com/builds/win64/static/?C=N&O=D"));
+                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("https://ffmpeg.zeranoe.com/builds/win64/static/?C=M&O=D"));
 
                 foreach (var metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
                 {
