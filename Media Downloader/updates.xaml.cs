@@ -239,15 +239,13 @@ namespace MediaDownloader
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         FileName = "java",
-                        Arguments = " -jar \"" + youtubedl.RipMePath + "\" --help"
+                        Arguments = " -jar \"" + youtubedl.RipMePath + "\" --version"
                     }
                 };
                 ripme.Start();
 
                 //Getting the current RipMe version
-                CurrentRipMeVersion = ripme.StandardOutput.ReadToEnd()
-                    .Split(Environment.NewLine.ToCharArray())[4]
-                    .Replace("Initialized ripme v", "");
+                CurrentRipMeVersion = ripme.StandardOutput.ReadToEnd();
 
                 Dispatcher.Invoke(() =>
                 {
