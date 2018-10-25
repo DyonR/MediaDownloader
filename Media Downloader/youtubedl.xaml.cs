@@ -201,7 +201,7 @@ namespace MediaDownloader
                 if (AudioButton.IsChecked.Value) { DefaultArguments = AudioArguments; }
 
                 //Set the correct arguments when the Video Button is checked
-                VideoArguments = "--continu --ignore-errors --no-overwrites --write-sub --sub-format srt --sub-lang en --output \"" + SeparateFolder + "%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
+                VideoArguments = "--continu --ignore-errors --no-overwrites --sub-lang en --output \"" + SeparateFolder + "%(title)s.%(ext)s\" --ffmpeg-location \"" + ffmpegPath + "\" ";
                 if (VideoButton.IsChecked.Value) { DefaultArguments = VideoArguments; }
 
                 //Set the connection type of youtube-dl to IPv6, this option is still experimental, but I think it was a nice thing to add.
