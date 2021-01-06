@@ -14,7 +14,8 @@
         TextElement.FontWeight="Normal"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        Title="Media Downloader" Height="575" Width="640" ResizeMode="CanMinimize">
+        xmlns:local="clr-namespace:MediaDownloader"
+        Title="{x:Static local:ApplicationService.WindowTitle}" Height="575" Width="640" ResizeMode="CanMinimize">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Name="OpenFolderButton" Content="open downloads folder" Click="OpenFolderButton_Click" />

@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Net;
 using Microsoft.Win32;
+using System.Reflection;
+using System.IO;
 
 namespace MediaDownloader
 {
@@ -39,5 +41,9 @@ Either your internet is not working or Google.com is unreachable.", "No internet
         {
             Process.Start("explorer.exe", Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders").GetValue("{374DE290-123F-4565-9164-39C4925E467B}") + "\\Media Downloads\\");
         }
+    }
+    public class ApplicationService
+    {
+        public static string WindowTitle = "Media Downloader | Version: " + (new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime).ToString();
     }
 }

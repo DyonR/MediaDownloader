@@ -351,31 +351,16 @@ namespace MediaDownloader
                 });
             }
         }
+
         private void ffmpegGetLatestVersion_Process()
         {
-            try
+            LatestFFmpegVersion = ClientFFmpeg.DownloadString("https://www.gyan.dev/ffmpeg/builds/release-version");
+            Dispatcher.Invoke(() =>
             {
-                var ffmpegHtmlDocument = new HtmlDocument();
-                ffmpegHtmlDocument.LoadHtml(ClientFFmpeg.DownloadString("https://ffmpeg.zeranoe.com/builds/win64/static/?C=M&O=D"));
-
-                foreach (var metaTag in ffmpegHtmlDocument.DocumentNode.SelectNodes("//a[@href]"))
-                {
-                    var hrefValue = metaTag.GetAttributeValue("href", string.Empty);
-                    downloadLinks.Add(hrefValue);
-                }
-                LatestFFmpegVersion = downloadLinks[7];
-                LatestFFmpegVersion = LatestFFmpegVersion.Trim("ffmpeg-".ToCharArray());
-                LatestFFmpegVersion = LatestFFmpegVersion.Substring(0, LatestFFmpegVersion.IndexOf('-'));
-                Dispatcher.Invoke(() =>
-                {
-                    LatestFFmpegVersionText.Text = "Latest FFmpeg version: " + LatestFFmpegVersion;
-                });
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Unable to get latetst FFmpeg version");
-            }
+                LatestFFmpegVersionText.Text = "Latest FFmpeg version: " + LatestFFmpegVersion;
+            });
         }
+
         private void ffmpegCompareVersion_Process()
         {
             ffmpegGetCurrentVersion_Process();
@@ -433,7 +418,7 @@ namespace MediaDownloader
             {
                 UpdateFFmpeg.Content = "Downloading FFmpeg...";
             });
-            ClientFFmpeg.DownloadFile("http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip", youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
+            ClientFFmpeg.DownloadFile("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
             var zip = ZipFile.Read(youtubedl.LocalStorageFolder + "\\ffmpeg.zip");
             foreach (var file in zip)
             {
@@ -444,7 +429,7 @@ namespace MediaDownloader
             {
                 UpdateFFmpeg.Content = "Moving files...";
             });
-            Directory.Move(youtubedl.LocalStorageFolder + "\\ffmpeg-latest-win64-static", youtubedl.LocalStorageFolder + "\\ffmpeg");
+            Directory.Move(youtubedl.LocalStorageFolder + "\\ffmpeg-" + LatestFFmpegVersion + "-essentials_build", youtubedl.LocalStorageFolder + "\\ffmpeg");
 
             try { File.Delete(youtubedl.LocalStorageFolder + "\\ffmpeg.zip"); }
             catch { MessageBox.Show("Unable to delete: " + youtubedl.LocalStorageFolder + "\\ffmpeg.zip"); }
